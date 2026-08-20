@@ -26,67 +26,67 @@ const RawDataInvestasi: React.FC = () => {
   }, []);
 
   return (
-    <div className="animate-in fade-in duration-700 space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+    <div className="animate-in fade-in duration-700 space-y-10">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter">Raw Data <span className="text-amber-600">Investasi</span></h1>
-          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest italic">Data Historis Investasi Reksadana & Lainnya</p>
+          <h1 className="text-4xl font-black text-white uppercase italic tracking-tighter">Investment <span className="text-brand-blue">Archives</span></h1>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-1 italic">Historical Mutual Fund & Asset Matrix</p>
         </div>
         <button 
           onClick={fetchData}
           disabled={loading}
-          className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-slate-400 shadow-sm"
+          className="p-4 bg-slate-900/60 border border-slate-800 rounded-2xl hover:bg-slate-800 transition-all text-slate-400 shadow-2xl active:scale-95"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${loading ? 'animate-spin text-amber-500' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${loading ? 'animate-spin text-brand-blue' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 p-4 rounded-xl text-red-600 text-xs font-bold">
-          {error}
+        <div className="bg-red-500/10 border border-red-500/30 p-6 rounded-2xl text-red-400 text-[10px] font-black uppercase tracking-[0.3em] italic">
+          SYSTEM ERROR: {error}
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm">
+      <div className="bg-slate-900/60 border border-slate-800 rounded-[3.5rem] overflow-hidden shadow-2xl backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Bulan (A)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Type Invest (B)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Fund Manager (C)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Fund (D)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Ratio (E)</th>
+            <thead className="bg-slate-950/40">
+              <tr>
+                <th className="px-10 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic border-b border-slate-900">Timeline Node</th>
+                <th className="px-10 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic border-b border-slate-900">Asset Classification</th>
+                <th className="px-10 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic border-b border-slate-900">Entity Manager</th>
+                <th className="px-10 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic border-b border-slate-900 text-right">Capital Value</th>
+                <th className="px-10 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic border-b border-slate-900 text-right">Yield Ratio</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-900">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-20 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="w-8 h-8 border-2 border-amber-500/20 border-t-amber-500 rounded-full animate-spin"></div>
-                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Memuat Data...</p>
+                  <td colSpan={5} className="px-10 py-32 text-center">
+                    <div className="flex flex-col items-center gap-6">
+                      <div className="w-10 h-10 border-4 border-brand-blue/20 border-t-brand-blue rounded-full animate-spin"></div>
+                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] italic">Accessing Ledger...</p>
                     </div>
                   </td>
                 </tr>
               ) : data.length <= 1 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-20 text-center">
-                    <p className="text-slate-400 text-xs italic">Belum ada data investasi yang tercatat.</p>
+                  <td colSpan={5} className="px-10 py-32 text-center">
+                    <p className="text-slate-700 text-[10px] font-black uppercase tracking-[0.5em] italic opacity-30">No Assets Detected in Protocol</p>
                   </td>
                 </tr>
               ) : (
                 data.slice(1).map((row, i) => (
-                  <tr key={i} className="hover:bg-amber-50 transition-colors group">
-                    <td className="px-6 py-4 text-xs text-slate-500 font-bold">{row[0]}</td>
-                    <td className="px-6 py-4 text-xs text-slate-400 font-medium uppercase">{row[1]}</td>
-                    <td className="px-6 py-4 text-xs text-slate-900 font-black uppercase tracking-tight">{row[2]}</td>
-                    <td className="px-6 py-4 text-xs text-emerald-600 font-mono text-right font-bold">
+                  <tr key={i} className="hover:bg-slate-800/40 transition-all group">
+                    <td className="px-10 py-6 text-[10px] text-slate-500 font-black uppercase italic tracking-widest">{row[0]}</td>
+                    <td className="px-10 py-6 text-[10px] text-slate-600 font-black uppercase tracking-widest italic opacity-60">{row[1]}</td>
+                    <td className="px-10 py-6 text-xs text-slate-300 font-black uppercase italic tracking-widest group-hover:text-brand-blue transition-colors">{row[2]}</td>
+                    <td className="px-10 py-6 text-sm text-brand-olive font-mono text-right font-black italic tracking-tighter">
                       Rp {parseFloat(row[3]?.toString().replace(/[^\d.-]/g, '') || '0').toLocaleString('id-ID')}
                     </td>
-                    <td className="px-6 py-4 text-xs text-amber-600 font-mono text-right font-black italic">{row[4]}</td>
+                    <td className="px-10 py-6 text-sm text-brand-peach font-mono text-right font-black italic tracking-widest">{row[4]}</td>
                   </tr>
                 ))
               )}

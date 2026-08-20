@@ -173,16 +173,16 @@ const StockbitDashboard: React.FC = () => {
           <select 
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="bg-white border border-brand-brown/20 rounded-xl px-4 py-2.5 text-xs font-black text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 uppercase tracking-widest"
+            className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-black text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 uppercase tracking-widest italic"
           >
-            <option value="ALL">SEMUA BULAN</option>
+            <option value="ALL">ALL NODES</option>
             {monthsOrder.map(m => (
               <option key={m} value={m}>{m}</option>
             ))}
           </select>
           <button 
             onClick={fetchData}
-            className="p-2.5 bg-white border border-brand-brown/20 rounded-xl text-slate-400 hover:text-brand-blue transition-colors shadow-lg active:scale-95"
+            className="p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-slate-500 hover:text-brand-blue transition-colors shadow-2xl active:scale-95"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -194,15 +194,15 @@ const StockbitDashboard: React.FC = () => {
       {/* Overview Cards Removed */}
 
       {/* Chart Section */}
-      <div className="bg-white border border-brand-brown/10 p-8 rounded-[2.5rem] shadow-sm">
+      <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-[2.5rem] shadow-2xl backdrop-blur-md">
         <div className="flex justify-between items-center mb-8">
-            <h3 className="text-slate-800 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+            <h3 className="text-white font-bold uppercase tracking-widest text-xs flex items-center gap-2 italic">
             <Icons.Growth /> Net Variance Distribution by Ticker
             </h3>
             {selectedTicker && (
                 <button 
                     onClick={() => setSelectedTicker(null)}
-                    className="text-[9px] font-black text-brand-blue uppercase tracking-widest bg-brand-blue/10 px-3 py-1 rounded-lg border border-brand-blue/20 hover:bg-brand-blue hover:text-white transition-all"
+                    className="text-[9px] font-black text-brand-blue uppercase tracking-widest bg-brand-blue/10 px-4 py-2 rounded-xl border border-brand-blue/20 hover:bg-brand-blue hover:text-white transition-all italic"
                 >
                     Reset Selection
                 </button>
@@ -218,13 +218,13 @@ const StockbitDashboard: React.FC = () => {
                     }
                 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-              <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
               <Tooltip 
-                cursor={{fill: 'rgba(0,0,0,0.02)'}}
-                contentStyle={{backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px'}}
-                itemStyle={{fontWeight: 'bold'}}
+                cursor={{fill: 'rgba(255,255,255,0.02)'}}
+                contentStyle={{backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', color: '#fff'}}
+                itemStyle={{fontWeight: 'bold', color: '#fff'}}
               />
               <Bar dataKey="netVariance" name="Net Variance" radius={[4, 4, 0, 0]} className="cursor-pointer">
                 {analytics.stockStats.map((entry, index) => (
@@ -240,18 +240,18 @@ const StockbitDashboard: React.FC = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <p className="text-center text-[9px] text-slate-600 font-bold uppercase tracking-widest mt-4 italic">
-            💡 Tip: Klik salah satu batang untuk melihat rincian varians di bawah.
+        <p className="text-center text-[9px] text-slate-500 font-black uppercase tracking-widest mt-6 italic">
+            💡 Tip: Click on a bar node to decrypt variance specifics.
         </p>
       </div>
 
       {/* Stock Variance Table - Conditional Rendering */}
       {selectedTicker && (
-        <div className="bg-white border border-brand-brown/10 rounded-[2.5rem] overflow-hidden shadow-xl animate-in slide-in-from-top-4 duration-500">
-            <div className="p-6 bg-brand-cream/30 border-b border-brand-brown/10 flex justify-between items-center">
+        <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-top-4 duration-500 backdrop-blur-md">
+            <div className="p-8 bg-slate-950/40 border-b border-slate-800 flex justify-between items-center">
             <div>
-                <h3 className="text-slate-900 font-black uppercase tracking-widest text-xs">Transaction Database: <span className="text-brand-blue">{selectedTicker}</span></h3>
-                <p className="text-slate-500 text-[9px] uppercase font-bold mt-1 tracking-widest italic">Data Mentah dari Spreadsheet Stockbit</p>
+                <h3 className="text-white font-black uppercase tracking-widest text-xs italic">Transaction Protocol: <span className="text-brand-blue">{selectedTicker}</span></h3>
+                <p className="text-slate-500 text-[9px] uppercase font-black mt-1 tracking-[0.3em] italic">Decrypted Feed from Central Ledger</p>
             </div>
             <button 
                 onClick={() => setSelectedTicker(null)}
@@ -262,23 +262,23 @@ const StockbitDashboard: React.FC = () => {
             </div>
             <div className="overflow-x-auto">
             <table className="w-full text-left text-[10px]">
-                <thead className="bg-brand-cream/20">
+                <thead className="bg-slate-950/60 text-slate-500 border-b border-slate-800">
                 <tr>
-                    <th className="p-4 text-slate-500 uppercase font-black tracking-widest">Date</th>
-                    <th className="p-4 text-slate-500 uppercase font-black tracking-widest">Side</th>
-                    <th className="p-4 text-slate-500 uppercase font-black tracking-widest text-right">Lot</th>
-                    <th className="p-4 text-slate-500 uppercase font-black tracking-widest text-right">Price</th>
-                    <th className="p-4 text-slate-500 uppercase font-black tracking-widest text-right">Buy Value</th>
-                    <th className="p-4 text-slate-500 uppercase font-black tracking-widest text-right">Sell Value</th>
-                    <th className="p-4 text-slate-500 uppercase font-black tracking-widest text-right">Tax</th>
+                    <th className="p-6 uppercase font-black tracking-widest italic">Timestamp</th>
+                    <th className="p-6 uppercase font-black tracking-widest italic">Protocol</th>
+                    <th className="p-6 uppercase font-black tracking-widest italic text-right">Volume</th>
+                    <th className="p-6 uppercase font-black tracking-widest italic text-right">Node Price</th>
+                    <th className="p-6 uppercase font-black tracking-widest italic text-right">Buy Value</th>
+                    <th className="p-6 uppercase font-black tracking-widest italic text-right">Sell Value</th>
+                    <th className="p-6 uppercase font-black tracking-widest italic text-right">System Tax</th>
                 </tr>
                 </thead>
-                <tbody className="divide-y divide-brand-brown/5">
+                <tbody className="divide-y divide-slate-800/40">
                 {tickerTransactions.map((row, i) => (
-                    <tr key={i} className="hover:bg-brand-blue/5 transition-all group">
-                        <td className="p-4 font-mono text-slate-500">{formatDisplayDate(row[0])}</td>
-                        <td className="p-4">
-                            <span className={`px-2 py-0.5 rounded-md font-black text-[9px] ${
+                    <tr key={i} className="hover:bg-slate-800/20 transition-all group">
+                        <td className="p-6 font-mono text-slate-400 font-black italic">{formatDisplayDate(row[0])}</td>
+                        <td className="p-6">
+                            <span className={`px-3 py-1 rounded-lg font-black text-[9px] italic tracking-widest ${
                                 row[2]?.toString().toUpperCase() === 'BUY' 
                                     ? 'bg-brand-olive/10 text-brand-olive border border-brand-olive/20' 
                                     : 'bg-brand-peach/10 text-brand-peach border border-brand-peach/20'
@@ -286,15 +286,15 @@ const StockbitDashboard: React.FC = () => {
                                 {row[2]}
                             </span>
                         </td>
-                        <td className="p-4 text-right font-mono text-slate-600">{parseNum(row[3]).toLocaleString()}</td>
-                        <td className="p-4 text-right font-mono text-slate-600">Rp {parseNum(row[4]).toLocaleString()}</td>
-                        <td className="p-4 text-right font-mono text-brand-olive">
+                        <td className="p-6 text-right font-mono text-slate-400 font-black italic">{parseNum(row[3]).toLocaleString()}</td>
+                        <td className="p-6 text-right font-mono text-slate-400 font-black italic">Rp {parseNum(row[4]).toLocaleString()}</td>
+                        <td className="p-6 text-right font-mono text-brand-olive font-black italic">
                             {parseNum(row[5]) > 0 ? `Rp ${parseNum(row[5]).toLocaleString()}` : '-'}
                         </td>
-                        <td className="p-4 text-right font-mono text-brand-peach">
+                        <td className="p-6 text-right font-mono text-brand-peach font-black italic">
                             {parseNum(row[6]) > 0 ? `Rp ${parseNum(row[6]).toLocaleString()}` : '-'}
                         </td>
-                        <td className="p-4 text-right font-mono text-slate-400 italic">
+                        <td className="p-6 text-right font-mono text-slate-600 italic font-black">
                             {parseNum(row[7]) > 0 ? `Rp ${parseNum(row[7]).toLocaleString()}` : '-'}
                         </td>
                     </tr>
@@ -302,9 +302,9 @@ const StockbitDashboard: React.FC = () => {
                 </tbody>
             </table>
             </div>
-            <div className="p-4 bg-brand-cream/10 border-t border-brand-brown/10 text-center">
-            <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest leading-relaxed">
-                Menampilkan {tickerTransactions.length} baris transaksi untuk {selectedTicker}.
+            <div className="p-6 bg-slate-950/40 border-t border-slate-800 text-center">
+            <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.4em] leading-relaxed italic">
+                Processed {tickerTransactions.length} transaction nodes for {selectedTicker}.
             </p>
             </div>
         </div>

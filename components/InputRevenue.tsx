@@ -79,34 +79,37 @@ REVENUE : 12000000`;
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto pb-20">
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight italic uppercase">
-          AI <span className="text-brand-olive">Revenue Input</span>
+        <h2 className="text-4xl font-black text-white mb-2 tracking-tighter italic uppercase">
+          AI <span className="text-brand-olive">Revenue Engine</span>
         </h2>
-        <p className="text-slate-500 text-sm font-medium italic uppercase tracking-widest">
-          {status === 'preview' ? 'Tinjau Pendapatan Sebelum Sinkronisasi' : 'Otomatisasi Laporan Pendapatan Iqbal'}
+        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] leading-relaxed italic">
+          Automated Inflow Tracking • Multi-Channel Audit
         </p>
       </div>
 
       <div className="relative">
         {(status === 'idle' || status === 'analyzing' || status === 'error') && (
-          <div className="bg-white/80 border border-brand-brown/10 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl animate-in fade-in duration-500">
-            <form onSubmit={handleAnalyze} className="space-y-6">
+          <div className="bg-slate-900/40 border border-slate-800 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
+            <form onSubmit={handleAnalyze} className="space-y-8">
               <div className="relative">
-                <div className="flex justify-between items-center mb-4">
-                  <label className="text-[10px] uppercase font-black text-slate-500 tracking-[0.2em]">Input Revenue Area</label>
+                <div className="flex justify-between items-center mb-6">
+                  <label className="text-[10px] uppercase font-black text-slate-500 tracking-[0.3em] italic flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-brand-olive rounded-full animate-pulse"></span>
+                    Terminal Input Matrix
+                  </label>
                   <button 
                     type="button"
                     onClick={() => setCommand(templateString)}
-                    className="text-[10px] bg-brand-olive/10 text-brand-olive font-black px-4 py-2 rounded-xl border border-brand-olive/20 hover:bg-brand-olive hover:text-white transition-all uppercase tracking-widest"
+                    className="text-[10px] bg-slate-800 text-slate-400 font-black px-6 py-2.5 rounded-xl border border-slate-700 hover:bg-brand-olive hover:text-white transition-all uppercase tracking-widest shadow-lg"
                   >
-                    Pakai Template
+                    Load Sample Protocol
                   </button>
                 </div>
                 <textarea
                   value={command}
                   onChange={(e) => setCommand(e.target.value)}
-                  placeholder="Contoh: 'Tadi dapet bonus proyek 5 juta dari klien A'..."
-                  className="w-full bg-brand-cream/20 border border-brand-brown/10 rounded-2xl px-6 py-5 text-slate-900 focus:outline-none focus:ring-4 focus:ring-brand-olive/10 focus:border-brand-olive/50 transition-all min-h-[220px] resize-none text-lg font-mono placeholder:text-slate-400"
+                  placeholder="Describe your revenue influx (e.g., Project bonus 5M or Dividend payout 1.2M)..."
+                  className="w-full bg-slate-950/60 border border-slate-800 rounded-3xl px-8 py-8 text-white focus:outline-none focus:ring-4 focus:ring-brand-olive/10 focus:border-brand-olive/50 transition-all min-h-[250px] resize-none text-xl font-bold placeholder:text-slate-600 shadow-inner italic"
                   disabled={loading}
                 />
               </div>
@@ -114,58 +117,64 @@ REVENUE : 12000000`;
               <button 
                 type="submit"
                 disabled={loading || !command.trim()}
-                className="w-full bg-brand-olive hover:bg-brand-olive/90 disabled:bg-slate-200 disabled:text-slate-400 font-black py-5 rounded-2xl shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 text-lg text-white"
+                className="w-full bg-brand-olive hover:bg-brand-olive/90 disabled:bg-slate-800 disabled:text-slate-600 font-black py-6 rounded-[2rem] shadow-[0_20px_50px_rgba(16,185,129,0.3)] transition-all active:scale-[0.98] flex items-center justify-center gap-4 text-xl text-white italic border border-white/10"
               >
                 {status === 'analyzing' ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    AI MENGANALISIS PENDAPATAN...
+                    <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    DECRYPTING REVENUE...
                   </>
-                ) : "PROSES PENDAPATAN DENGAN AI"}
+                ) : (
+                  <>
+                    <Icons.Sparkles />
+                    INITIALIZE INFLOW
+                  </>
+                )}
               </button>
             </form>
           </div>
         )}
 
         {(status === 'preview' || status === 'syncing') && result && (
-          <div className="animate-in zoom-in-95 fade-in duration-500 bg-white border-2 border-brand-olive/30 p-10 rounded-[3rem] shadow-[0_0_50px_rgba(141,135,65,0.1)] backdrop-blur-3xl relative overflow-hidden">
-             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brand-olive to-brand-blue"></div>
-             
-             <div className="flex items-center gap-4 mb-10">
-                <div className="bg-brand-olive p-3 rounded-2xl text-white">
-                   <Icons.Sparkles />
+          <div className="animate-in zoom-in-95 fade-in duration-500 bg-slate-900 border-2 border-brand-olive/30 p-12 rounded-[4rem] shadow-[0_0_80px_rgba(16,185,129,0.15)] backdrop-blur-3xl relative overflow-hidden">
+             <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                <Icons.Sparkles />
+             </div>
+             <div className="flex items-center gap-5 mb-12">
+                <div className="bg-brand-olive p-4 rounded-2xl text-white shadow-2xl shadow-brand-olive/30">
+                   <Icons.TrendingUp />
                 </div>
                 <div>
-                   <h3 className="text-slate-900 font-black text-xl uppercase tracking-tighter">Konfirmasi Pendapatan</h3>
-                   <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Silakan periksa detail hasil ekstraksi pendapatan</p>
+                   <h3 className="text-white font-black text-2xl uppercase tracking-tighter italic">Inflow Validation</h3>
+                   <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] italic">Reviewing entry for REVENUE ledger</p>
                 </div>
              </div>
 
-             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">BULAN (A)</p>
-                   <p className="text-slate-900 font-bold">{result.bulan || '-'}</p>
+             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">MONTH_NODE (A)</p>
+                   <p className="text-white font-black italic">{result.bulan || '-'}</p>
                 </div>
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">TANGGAL (B)</p>
-                   <p className="text-slate-900 font-mono font-bold">{result.tanggal || '-'}</p>
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">TIMESTAMP (B)</p>
+                   <p className="text-white font-mono font-black italic">{result.tanggal || '-'}</p>
                 </div>
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">HARI (C)</p>
-                   <p className="text-slate-900 font-bold">{result.hari || '-'}</p>
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">DAY_REF (C)</p>
+                   <p className="text-white font-black italic">{result.hari || '-'}</p>
                 </div>
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">WEEK (D)</p>
-                   <p className="text-brand-olive font-black italic">{result.week || '-'}</p>
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">WEEK_PHASE (D)</p>
+                   <p className="text-brand-olive font-black italic text-lg">{result.week || '-'}</p>
                 </div>
                 
-                <div className="col-span-2 bg-brand-cream/20 p-6 rounded-2xl border border-brand-brown/10 border-l-4 border-l-brand-olive">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">PARAMETER / SUMBER (E)</p>
-                   <p className="text-slate-900 font-black text-2xl tracking-tighter">{result.parameter || '-'}</p>
+                <div className="col-span-2 bg-slate-950/80 p-8 rounded-3xl border border-slate-800 border-l-8 border-l-brand-olive shadow-inner">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2 italic">PARAMETER_ID (E)</p>
+                   <p className="text-white font-black text-3xl tracking-tighter uppercase italic">{result.parameter || '-'}</p>
                 </div>
-                <div className="col-span-2 bg-brand-cream/20 p-6 rounded-2xl border border-brand-brown/10 border-l-4 border-l-brand-olive">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">REVENUE / NOMINAL (F)</p>
-                   <p className="text-brand-olive font-mono font-black text-3xl">Rp {(result.revenue || 0).toLocaleString('id-ID')}</p>
+                <div className="col-span-2 bg-slate-950/80 p-8 rounded-3xl border border-slate-800 border-l-8 border-l-brand-blue shadow-inner">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2 italic">NET_REVENUE (F)</p>
+                   <p className="text-brand-blue font-mono font-black text-4xl italic">Rp {(result.revenue || 0).toLocaleString('id-ID')}</p>
                 </div>
              </div>
 
@@ -173,24 +182,24 @@ REVENUE : 12000000`;
                 <button 
                   onClick={handleCancel}
                   disabled={status === 'syncing'}
-                  className="flex-1 py-4 px-6 rounded-2xl border border-brand-brown/20 text-slate-500 font-black uppercase tracking-widest hover:bg-slate-100 transition-all disabled:opacity-50"
+                  className="flex-1 py-5 px-8 rounded-[2rem] border border-slate-800 text-slate-500 font-black uppercase tracking-widest hover:bg-slate-800 hover:text-white transition-all active:scale-95 italic"
                 >
-                  Batal / Edit Teks
+                  Abort
                 </button>
                 <button 
                   onClick={handleFinalSync}
                   disabled={status === 'syncing'}
-                  className="flex-[2] py-4 px-6 rounded-2xl bg-brand-olive hover:bg-brand-olive/90 text-white font-black uppercase tracking-widest shadow-xl shadow-brand-olive/20 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                  className="flex-[2] py-5 px-8 rounded-[2rem] bg-brand-olive hover:bg-brand-olive/90 text-white font-black uppercase tracking-[0.2em] shadow-2xl shadow-brand-olive/30 transition-all flex items-center justify-center gap-4 active:scale-95 italic border border-white/10"
                 >
                   {status === 'syncing' ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                      MENYIMPAN REVENUE...
+                      <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                      UPLOADING...
                     </>
                   ) : (
                     <>
-                      <Icons.Wallet />
-                      Konfirmasi & Simpan Pendapatan
+                      <Icons.Masterdata />
+                      COMMIT REVENUE
                     </>
                   )}
                 </button>
@@ -199,27 +208,27 @@ REVENUE : 12000000`;
         )}
 
         {status === 'success' && (
-          <div className="bg-white border border-brand-olive/30 p-12 rounded-[3rem] text-center animate-in zoom-in duration-500 shadow-2xl">
-             <div className="w-20 h-20 bg-brand-olive/20 rounded-full flex items-center justify-center mx-auto mb-6 text-brand-olive border border-brand-olive/20">
+          <div className="bg-slate-900 border border-brand-olive/30 p-16 rounded-[4rem] text-center animate-in zoom-in duration-500 shadow-2xl">
+             <div className="w-24 h-24 bg-brand-olive/20 rounded-3xl flex items-center justify-center mx-auto mb-8 text-brand-olive border border-brand-olive/20 shadow-2xl shadow-brand-olive/20 rotate-12">
                 <Icons.Sparkles />
              </div>
-             <h3 className="text-brand-olive font-black text-3xl mb-2 tracking-tighter uppercase">Revenue Berhasil Dicatat!</h3>
-             <p className="text-slate-500 text-sm font-medium mb-10 italic uppercase tracking-widest">Data pendapatan sudah tersimpan di baris terbaru.</p>
+             <h3 className="text-brand-olive font-black text-4xl mb-4 tracking-tighter uppercase italic">Ledger Updated</h3>
+             <p className="text-slate-500 text-xs font-black mb-12 italic uppercase tracking-[0.4em] leading-loose">Inflow packet has been successfully indexed in "REVENUE" node.</p>
              
-             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+             <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <button 
                   onClick={() => {setStatus('idle'); setResult(null);}} 
-                  className="px-8 py-4 bg-slate-100 text-slate-700 text-xs font-black uppercase rounded-2xl border border-brand-brown/10 hover:bg-slate-200 transition-all"
+                  className="px-10 py-5 bg-slate-800 text-slate-300 text-xs font-black uppercase rounded-2xl border border-slate-700 hover:bg-slate-700 transition-all italic tracking-widest"
                 >
-                  Input Revenue Lagi
+                  New Inflow
                 </button>
                 <a 
                   href="https://docs.google.com/spreadsheets/d/1WiHaDJnXOMVKvLmkhzml0C3xUg69iHc3rsNKuEojJ2k/edit?gid=479119470" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="px-8 py-4 bg-brand-olive text-white text-xs font-black uppercase rounded-2xl shadow-lg shadow-brand-olive/20 inline-flex items-center gap-2 hover:bg-brand-olive/90 transition-all"
+                  className="px-10 py-5 bg-brand-olive text-white text-xs font-black uppercase rounded-2xl shadow-2xl shadow-brand-olive/30 inline-flex items-center gap-3 italic border border-white/10 tracking-widest hover:scale-105 transition-all"
                 >
-                  Buka Sheet Revenue <Icons.ChevronRight />
+                  Inspect Database <Icons.ChevronRight />
                 </a>
              </div>
           </div>
@@ -227,9 +236,9 @@ REVENUE : 12000000`;
 
         {status === 'error' && (
           <div className="mt-6 bg-red-500/10 border border-red-500/20 p-6 rounded-2xl text-center">
-             <p className="text-red-400 font-bold uppercase text-xs mb-1 tracking-widest">Sinkronisasi Gagal</p>
-             <p className="text-slate-500 text-[10px] italic">Gagal mengirim data pendapatan ke Spreadsheet.</p>
-             <button onClick={() => setStatus('idle')} className="mt-4 text-xs font-black text-white underline uppercase">Coba Lagi</button>
+             <p className="text-red-400 font-bold uppercase text-xs mb-1 tracking-widest">Protocol Failure</p>
+             <p className="text-slate-500 text-[10px] italic">Failed to bridge revenue data to central node.</p>
+             <button onClick={() => setStatus('idle')} className="mt-4 text-xs font-black text-white underline uppercase">Retry Protocol</button>
           </div>
         )}
       </div>

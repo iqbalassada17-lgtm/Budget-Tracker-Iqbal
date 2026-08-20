@@ -1,5 +1,6 @@
+/// <reference types="vite/client" />
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { Type } from "@google/genai";
 
 const INDO_MONTHS = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
 const INDO_DAYS = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
@@ -12,25 +13,41 @@ const getTodayFormatted = () => {
   return `${d}/${m}/${y}`;
 };
 
-const callGeminiWithRetry = async (fn: () => Promise<any>, retries = 3, delay = 1000): Promise<any> => {
+const GEMINI_PROXY_URL = (import.meta.env.VITE_API_URL || '') + '/api/gemini';
+
+const callGeminiProxy = async (payload: any): Promise<string> => {
   try {
-    return await fn();
-  } catch (error: any) {
-    if (retries <= 0) throw error;
-    const errorStr = JSON.stringify(error);
-    const isRetryable = errorStr.includes("500") || errorStr.includes("503") || errorStr.includes("xhr error");
-    if (isRetryable) {
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return callGeminiWithRetry(fn, retries - 1, delay * 2);
+    const response = await fetch(GEMINI_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || 'Gemini Proxy Error');
     }
+    
+    const data = await response.json();
+    return data.text;
+  } catch (error) {
+    console.error("Gemini Proxy Error:", error);
     throw error;
   }
 };
 
+const callWithRetry = async (fn: () => Promise<any>, retries = 3, delay = 1000): Promise<any> => {
+  try {
+    return await fn();
+  } catch (error: any) {
+    if (retries <= 0) throw error;
+    await new Promise(resolve => setTimeout(resolve, delay));
+    return callWithRetry(fn, retries - 1, delay * 2);
+  }
+};
+
 export const parseAssetCommand = async (text: string, brokerName: string): Promise<any[]> => {
-  return callGeminiWithRetry(async () => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
+  return callWithRetry(async () => {
     const prompt = `
       EXTRACT TRANSACTIONS FROM ${brokerName}: "${text}"
       
@@ -44,104 +61,89 @@ export const parseAssetCommand = async (text: string, brokerName: string): Promi
       7. Output: Pure JSON array. No conversational text.
     `;
 
-    const schema = {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          isTransaction: { type: Type.BOOLEAN },
-          transDate: { type: Type.STRING },
-          side: { type: Type.STRING },
-          lot: { type: Type.NUMBER },
-          price: { type: Type.NUMBER },
-          buyValue: { type: Type.NUMBER },
-          sellValue: { type: Type.NUMBER },
-          salesTax: { type: Type.NUMBER },
-          name: { type: Type.STRING }
-        },
-        required: ["name", "lot", "price", "side"]
-      }
-    };
-
-    const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview",
-      contents: prompt,
-      config: { 
-        responseMimeType: "application/json", 
-        responseSchema: schema,
-        thinkingConfig: { thinkingBudget: 2000 } 
-      },
+    const text_res = await callGeminiProxy({ 
+      model: "gemini-3-pro-preview", 
+      prompt 
     });
-
-    return response.text ? JSON.parse(response.text) : [];
+    
+    // Clean potential markdown code blocks
+    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
+    return JSON.parse(cleanJson);
   });
 };
 
 export const parseCostCommand = async (text: string): Promise<any> => {
-  return callGeminiWithRetry(async () => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  return callWithRetry(async () => {
     const today = getTodayFormatted();
-    const prompt = `Extract cost details from: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON.`;
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: { responseMimeType: "application/json" },
+    const prompt = `Extract cost details from: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, coa, cost, keterangan. No text around JSON.`;
+    const text_res = await callGeminiProxy({ 
+      model: "gemini-3-flash-preview", 
+      prompt 
     });
-    if (response.text) {
-      const data = JSON.parse(response.text);
-      const parts = (data.tanggal || today).split('/');
-      const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-      data.bulan = INDO_MONTHS[dateObj.getMonth()];
-      data.hari = INDO_DAYS[dateObj.getDay()];
-      data.week = Math.ceil(dateObj.getDate() / 7);
-      return data;
-    }
+    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
+    const data = JSON.parse(cleanJson);
+    const parts = (data.tanggal || today).split('/');
+    const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    data.bulan = INDO_MONTHS[dateObj.getMonth()];
+    data.hari = INDO_DAYS[dateObj.getDay()];
+    data.week = Math.ceil(dateObj.getDate() / 7);
+    return data;
   });
 };
 
 export const parseRevenueCommand = async (text: string): Promise<any> => {
-  return callGeminiWithRetry(async () => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  return callWithRetry(async () => {
     const today = getTodayFormatted();
-    const prompt = `Extract revenue details: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON.`;
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: { responseMimeType: "application/json" },
+    const prompt = `Extract revenue details: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, parameter, revenue. No text around JSON.`;
+    const text_res = await callGeminiProxy({ 
+      model: "gemini-3-flash-preview", 
+      prompt 
     });
-    if (response.text) {
-      const data = JSON.parse(response.text);
-      const parts = (data.tanggal || today).split('/');
-      const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-      data.bulan = INDO_MONTHS[dateObj.getMonth()];
-      data.hari = INDO_DAYS[dateObj.getDay()];
-      data.week = "WEEK" + Math.ceil(dateObj.getDate() / 7);
-      return data;
-    }
+    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
+    const data = JSON.parse(cleanJson);
+    const parts = (data.tanggal || today).split('/');
+    const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    data.bulan = INDO_MONTHS[dateObj.getMonth()];
+    data.hari = INDO_DAYS[dateObj.getDay()];
+    data.week = "WEEK" + Math.ceil(dateObj.getDate() / 7);
+    return data;
   });
 };
 
 export const getFinancialAdvice = async (summary: any): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: `Beri saran keuangan singkat untuk Iqbal. Saldo saat ini Rp ${summary.balance}.`,
+  const prompt = `
+    DASHBOARD CONTEXT:
+    - Total Revenue: Rp ${summary.income.toLocaleString()}
+    - Total Expenses: Rp ${summary.expenses.toLocaleString()}
+    - Current Balance: Rp ${summary.balance.toLocaleString()}
+    
+    TASK:
+    Beri 3 saran keuangan singkat, taktis, dan personal untuk Iqbal berdasarkan data di atas.
+    
+    FORMAT:
+    - Gunakan Bahasa Indonesia yang profesional namun modern (masculine tone).
+    - Berikan tepat 3 poin saran.
+    - Gunakan **bolding** (dengan tanda **) untuk kata kunci atau angka penting.
+    - Jangan gunakan karakter bullet (*) di awal kalimat, biarkan sistem yang menangani.
+    - Fokus pada optimasi revenue atau kontrol budget.
+    - Jangan terlalu panjang.
+  `;
+  
+  return await callGeminiProxy({ 
+    model: "gemini-3-flash-preview", 
+    prompt 
   });
-  return response.text || "Terus pantau keuanganmu.";
 };
 
 export const getGrowthStrategy = async (baseline: number): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: `Strategi investasi untuk modal Rp ${baseline}. Bahasa Indonesia.`,
+  return await callGeminiProxy({ 
+    model: "gemini-3-flash-preview", 
+    prompt: `Strategi investasi untuk modal Rp ${baseline}. Bahasa Indonesia.` 
   });
-  return response.text || "Investasi rutin adalah kunci.";
 };
 
 export const parseInvestasiCommand = async (text: string): Promise<any> => {
-  return callGeminiWithRetry(async () => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  return callWithRetry(async () => {
     const prompt = `
       Extract investment details from: "${text}"
       Template format:
@@ -151,13 +153,13 @@ export const parseInvestasiCommand = async (text: string): Promise<any> => {
       FUND : [AMOUNT]
       RATIO : [PERCENTAGE]
       
-      Output JSON with keys: bulan, typeInvest, fundManager, fund (number), ratio (string).
+      Output JSON with keys: bulan, typeInvest, fundManager, fund (number), ratio (string). No text around JSON.
     `;
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: { responseMimeType: "application/json" },
+    const text_res = await callGeminiProxy({ 
+      model: "gemini-3-flash-preview", 
+      prompt 
     });
-    return response.text ? JSON.parse(response.text) : null;
+    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
+    return JSON.parse(cleanJson);
   });
 };

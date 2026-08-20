@@ -76,34 +76,37 @@ KETERANGAN : MAKAN SIANG`;
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto pb-20">
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight italic uppercase">
-          AI <span className="text-brand-blue">Smart Cost</span>
+        <h2 className="text-4xl font-black text-white mb-2 tracking-tighter italic uppercase">
+          AI <span className="text-brand-blue">Strategic Logic</span>
         </h2>
-        <p className="text-slate-500 text-sm font-medium italic uppercase tracking-widest leading-relaxed">
-          Pencatatan Otomatis ke Database Sheet "INPUT COST"
+        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] leading-relaxed italic">
+          Otomatisasi Ledger • T-0 Synchronized Database
         </p>
       </div>
 
       <div className="relative">
         {(status === 'idle' || status === 'analyzing' || status === 'error') && (
-          <div className="bg-white/80 border border-brand-brown/10 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl">
-            <form onSubmit={handleAnalyze} className="space-y-6">
+          <div className="bg-slate-900/40 border border-slate-800 p-10 rounded-[3rem] backdrop-blur-xl shadow-2xl">
+            <form onSubmit={handleAnalyze} className="space-y-8">
               <div className="relative">
-                <div className="flex justify-between items-center mb-4">
-                  <label className="text-[10px] uppercase font-black text-slate-500 tracking-[0.2em]">Input Deskripsi Biaya</label>
+                <div className="flex justify-between items-center mb-6">
+                  <label className="text-[10px] uppercase font-black text-slate-500 tracking-[0.3em] italic flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-brand-blue rounded-full animate-pulse"></span>
+                    Terminal Input Deskripsi
+                  </label>
                   <button 
                     type="button"
                     onClick={() => setCommand(templateString)}
-                    className="text-[10px] bg-brand-blue/10 text-brand-blue font-black px-4 py-2 rounded-xl border border-brand-blue/20 hover:bg-brand-blue hover:text-white transition-all uppercase tracking-widest"
+                    className="text-[10px] bg-slate-800 text-slate-400 font-black px-6 py-2.5 rounded-xl border border-slate-700 hover:bg-brand-blue hover:text-white transition-all uppercase tracking-widest shadow-lg"
                   >
-                    Pakai Contoh
+                    Load Sample Protocol
                   </button>
                 </div>
                 <textarea
                   value={command}
                   onChange={(e) => setCommand(e.target.value)}
-                  placeholder="Ketik pengeluaranmu (misal: Beli pulsa 50rb atau Makan malam 35k)..."
-                  className="w-full bg-brand-cream/20 border border-brand-brown/10 rounded-2xl px-6 py-5 text-slate-900 focus:outline-none focus:ring-4 focus:ring-brand-blue/10 focus:border-brand-blue/50 transition-all min-h-[200px] resize-none text-lg font-mono placeholder:text-slate-400"
+                  placeholder="Ketik rincian pengeluaranmu (misal: Corporate dinner 500k atau Server maintenance 1.2jt)..."
+                  className="w-full bg-slate-950/60 border border-slate-800 rounded-3xl px-8 py-8 text-white focus:outline-none focus:ring-4 focus:ring-brand-blue/10 focus:border-brand-blue/50 transition-all min-h-[250px] resize-none text-xl font-bold placeholder:text-slate-600 shadow-inner italic"
                   disabled={loading}
                 />
               </div>
@@ -111,17 +114,17 @@ KETERANGAN : MAKAN SIANG`;
               <button 
                 type="submit"
                 disabled={loading || !command.trim()}
-                className="w-full bg-brand-blue hover:bg-brand-blue/90 disabled:bg-slate-200 disabled:text-slate-400 font-black py-5 rounded-2xl shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 text-lg text-white"
+                className="w-full bg-brand-blue hover:bg-brand-blue/90 disabled:bg-slate-800 disabled:text-slate-600 font-black py-6 rounded-[2rem] shadow-[0_20px_50px_rgba(59,130,246,0.3)] transition-all active:scale-[0.98] flex items-center justify-center gap-4 text-xl text-white italic border border-white/10"
               >
                 {status === 'analyzing' ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    MENGANALISIS...
+                    <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    PROCESSING DATA...
                   </>
                 ) : (
                   <>
                     <Icons.Sparkles />
-                    PROSES INPUT OTOMATIS
+                    EXECUTE SMART INPUT
                   </>
                 )}
               </button>
@@ -130,47 +133,50 @@ KETERANGAN : MAKAN SIANG`;
         )}
 
         {(status === 'preview' || status === 'syncing') && result && (
-          <div className="animate-in zoom-in-95 fade-in duration-500 bg-white border-2 border-brand-blue/30 p-10 rounded-[3rem] shadow-[0_0_50px_rgba(101,157,189,0.1)] backdrop-blur-3xl">
-             <div className="flex items-center gap-4 mb-10">
-                <div className="bg-brand-blue p-3 rounded-2xl text-white">
+          <div className="animate-in zoom-in-95 fade-in duration-500 bg-slate-900 border-2 border-brand-blue/30 p-12 rounded-[4rem] shadow-[0_0_80px_rgba(59,130,246,0.15)] backdrop-blur-3xl relative overflow-hidden">
+             <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                <Icons.Sparkles />
+             </div>
+             <div className="flex items-center gap-5 mb-12">
+                <div className="bg-brand-blue p-4 rounded-2xl text-white shadow-2xl shadow-brand-blue/30">
                    <Icons.Wallet />
                 </div>
                 <div>
-                   <h3 className="text-slate-900 font-black text-xl uppercase tracking-tighter">Konfirmasi Data</h3>
-                   <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Detail Baris Baru di Database INPUT COST</p>
+                   <h3 className="text-white font-black text-2xl uppercase tracking-tighter italic">Data Validation</h3>
+                   <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] italic">Reviewing entry for INPUT COST ledger</p>
                 </div>
              </div>
 
              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">BULAN (A)</p>
-                   <p className="text-slate-900 font-bold">{result.bulan || '-'}</p>
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">MONTH_IDX (A)</p>
+                   <p className="text-white font-black italic">{result.bulan || '-'}</p>
                 </div>
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">TANGGAL (B)</p>
-                   <p className="text-slate-900 font-mono font-bold">{result.tanggal || '-'}</p>
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">TIMESTAMP (B)</p>
+                   <p className="text-white font-mono font-black italic">{result.tanggal || '-'}</p>
                 </div>
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">HARI (C)</p>
-                   <p className="text-slate-900 font-bold">{result.hari || '-'}</p>
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">DAY_STR (C)</p>
+                   <p className="text-white font-black italic">{result.hari || '-'}</p>
                 </div>
-                <div className="bg-brand-cream/20 p-4 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1">WEEK (D)</p>
-                   <p className="text-brand-blue font-black italic">{result.week || '-'}</p>
+                <div className="bg-slate-950/60 p-6 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1 italic">WEEK_NUM (D)</p>
+                   <p className="text-brand-blue font-black italic text-lg">{result.week || '-'}</p>
                 </div>
                 
-                <div className="col-span-2 bg-brand-cream/20 p-6 rounded-2xl border border-brand-brown/10 border-l-4 border-l-brand-blue">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">COA / KATEGORI (E)</p>
-                   <p className="text-slate-900 font-black text-2xl tracking-tighter uppercase">{result.coa || '-'}</p>
+                <div className="col-span-2 bg-slate-950/80 p-8 rounded-3xl border border-slate-800 border-l-8 border-l-brand-blue shadow-inner">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2 italic">CLASSIFICATION (E)</p>
+                   <p className="text-white font-black text-3xl tracking-tighter uppercase italic">{result.coa || '-'}</p>
                 </div>
-                <div className="col-span-2 bg-brand-cream/20 p-6 rounded-2xl border border-brand-brown/10 border-l-4 border-l-brand-olive">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">COST / NOMINAL (F)</p>
-                   <p className="text-brand-olive font-mono font-black text-3xl">Rp {(result.cost || 0).toLocaleString('id-ID')}</p>
+                <div className="col-span-2 bg-slate-950/80 p-8 rounded-3xl border border-slate-800 border-l-8 border-l-brand-olive shadow-inner">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2 italic">ALLOCATION (F)</p>
+                   <p className="text-brand-olive font-mono font-black text-4xl italic">Rp {(result.cost || 0).toLocaleString('id-ID')}</p>
                 </div>
 
-                <div className="col-span-full bg-brand-cream/20 p-6 rounded-2xl border border-brand-brown/10">
-                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">KETERANGAN (G)</p>
-                   <p className="text-slate-700 font-medium italic text-lg leading-relaxed uppercase">{result.keterangan || '-'}</p>
+                <div className="col-span-full bg-slate-950/60 p-8 rounded-3xl border border-slate-800">
+                   <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2 italic">MANIFEST_DESC (G)</p>
+                   <p className="text-slate-300 font-bold italic text-xl leading-relaxed uppercase tracking-tight">{result.keterangan || '-'}</p>
                 </div>
              </div>
 
@@ -178,24 +184,24 @@ KETERANGAN : MAKAN SIANG`;
                 <button 
                   onClick={() => setStatus('idle')}
                   disabled={status === 'syncing'}
-                  className="flex-1 py-4 px-6 rounded-2xl border border-brand-brown/20 text-slate-500 font-black uppercase tracking-widest hover:bg-slate-100 transition-all active:scale-95"
+                  className="flex-1 py-5 px-8 rounded-[2rem] border border-slate-800 text-slate-500 font-black uppercase tracking-widest hover:bg-slate-800 hover:text-white transition-all active:scale-95 italic"
                 >
-                  Batal
+                  Abort
                 </button>
                 <button 
                   onClick={handleFinalSync}
                   disabled={status === 'syncing'}
-                  className="flex-[2] py-4 px-6 rounded-2xl bg-brand-blue hover:bg-brand-blue/90 text-white font-black uppercase tracking-widest shadow-xl shadow-brand-blue/20 transition-all flex items-center justify-center gap-3 active:scale-95"
+                  className="flex-[2] py-5 px-8 rounded-[2rem] bg-brand-blue hover:bg-brand-blue/90 text-white font-black uppercase tracking-[0.2em] shadow-2xl shadow-brand-blue/30 transition-all flex items-center justify-center gap-4 active:scale-95 italic border border-white/10"
                 >
                   {status === 'syncing' ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                      SEDANG MENGIRIM...
+                      <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                      UPLOADING...
                     </>
                   ) : (
                     <>
                       <Icons.Masterdata />
-                      SIMPAN KE DATABASE
+                      COMMIT TO DATABASE
                     </>
                   )}
                 </button>
@@ -204,25 +210,25 @@ KETERANGAN : MAKAN SIANG`;
         )}
 
         {status === 'success' && (
-          <div className="bg-white border border-brand-olive/30 p-12 rounded-[3rem] text-center animate-in zoom-in duration-500 shadow-2xl">
-             <div className="w-20 h-20 bg-brand-olive/20 rounded-full flex items-center justify-center mx-auto mb-6 text-brand-olive border border-brand-olive/20">
+          <div className="bg-slate-900 border border-brand-olive/30 p-16 rounded-[4rem] text-center animate-in zoom-in duration-500 shadow-2xl">
+             <div className="w-24 h-24 bg-brand-olive/20 rounded-3xl flex items-center justify-center mx-auto mb-8 text-brand-olive border border-brand-olive/20 shadow-2xl shadow-brand-olive/20 rotate-12">
                 <Icons.Sparkles />
              </div>
-             <h3 className="text-brand-olive font-black text-3xl mb-2 tracking-tighter uppercase">Berhasil Disimpan!</h3>
-             <p className="text-slate-500 text-sm font-medium mb-10 italic uppercase tracking-widest">Data biaya Iqbal telah masuk ke baris terbaru di sheet "INPUT COST".</p>
+             <h3 className="text-brand-olive font-black text-4xl mb-4 tracking-tighter uppercase italic">Commit Successful</h3>
+             <p className="text-slate-500 text-xs font-black mb-12 italic uppercase tracking-[0.4em] leading-loose">Data packet has been successfully indexed in "INPUT COST" ledger.</p>
              
-             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+             <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <button 
                   onClick={() => setStatus('idle')} 
-                  className="px-8 py-4 bg-slate-100 text-slate-700 text-xs font-black uppercase rounded-2xl border border-brand-brown/10 hover:bg-slate-200 transition-all"
+                  className="px-10 py-5 bg-slate-800 text-slate-300 text-xs font-black uppercase rounded-2xl border border-slate-700 hover:bg-slate-700 transition-all italic tracking-widest"
                 >
-                  Input Lagi
+                  New Transaction
                 </button>
                 <button 
                   onClick={() => window.open('https://docs.google.com/spreadsheets/d/1WiHaDJnXOMVKvLmkhzml0C3xUg69iHc3rsNKuEojJ2k/edit', '_blank')}
-                  className="px-8 py-4 bg-brand-blue text-white text-xs font-black uppercase rounded-2xl shadow-lg shadow-brand-blue/20 inline-flex items-center gap-2"
+                  className="px-10 py-5 bg-brand-blue text-white text-xs font-black uppercase rounded-2xl shadow-2xl shadow-brand-blue/30 inline-flex items-center gap-3 italic border border-white/10 tracking-widest hover:scale-105 transition-all"
                 >
-                  Cek Spreadsheet <Icons.ChevronRight />
+                  Inspect Database <Icons.ChevronRight />
                 </button>
              </div>
           </div>

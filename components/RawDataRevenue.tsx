@@ -117,118 +117,118 @@ const RawDataRevenue: React.FC = () => {
   );
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 space-y-6">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 space-y-10">
       {/* Header & Stats Card */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
         <div>
-          <h4 className="text-emerald-600 text-[10px] font-black uppercase tracking-[0.4em] mb-2 italic">Cloud Archive</h4>
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase italic">
-            Raw Data <span className="text-emerald-600">Revenue</span>
+          <h4 className="text-brand-blue text-[10px] font-black uppercase tracking-[0.4em] mb-3 italic">Secure Cloud Archive</h4>
+          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic">
+            Revenue <span className="text-brand-blue">Ledger</span>
           </h2>
         </div>
         
-        <div className="bg-white border border-slate-200 p-6 rounded-[2rem] flex items-center gap-8 shadow-sm">
+        <div className="bg-slate-900/60 border border-slate-800 p-8 rounded-[3rem] flex items-center gap-10 shadow-2xl backdrop-blur-xl">
            <div className="text-right">
-              <p className="text-[8px] text-slate-500 font-black uppercase tracking-widest mb-1">Accumulated View Revenue</p>
-              <p className="text-emerald-600 font-mono font-black text-2xl leading-none tracking-tighter">
+              <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mb-2 italic">Accumulated Inflow</p>
+              <p className="text-brand-blue font-mono font-black text-3xl leading-none tracking-tighter italic">
                 Rp {totalFilteredRevenue.toLocaleString('id-ID')}
               </p>
            </div>
-           <div className="w-px h-12 bg-slate-100"></div>
+           <div className="w-px h-16 bg-slate-800"></div>
            <button 
             onClick={fetchData}
-            className="p-4 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white rounded-2xl transition-all shadow-sm active:scale-95 border border-emerald-100"
+            className="p-5 bg-slate-800 hover:bg-slate-700 text-brand-blue hover:text-white rounded-[2rem] transition-all shadow-2xl active:scale-95 border border-slate-700"
             title="Refresh Database"
            >
-             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+             <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
              </svg>
            </button>
         </div>
       </div>
 
       {/* Navigation & Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white p-4 rounded-[2.5rem] border border-slate-200 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 bg-slate-900/40 p-6 rounded-[3rem] border border-slate-800 shadow-2xl backdrop-blur-md">
         <div className="relative group">
           <input 
             type="text" 
-            placeholder="Cari transaksi..." 
+            placeholder="Search transaction trail..." 
             value={filters.search}
             onChange={e => setFilters({...filters, search: e.target.value})}
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500/30 outline-none transition-all placeholder:text-slate-400"
+            className="w-full bg-slate-950/60 border border-slate-800 rounded-2xl px-6 py-4 text-[10px] text-white font-black italic tracking-widest focus:ring-1 focus:ring-brand-blue/30 outline-none transition-all placeholder:text-slate-700"
           />
         </div>
         
         <select 
           value={filters.bulan}
           onChange={e => setFilters({...filters, bulan: e.target.value})}
-          className="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-[10px] font-black uppercase text-slate-900 outline-none cursor-pointer focus:border-emerald-500/50"
+          className="bg-slate-950/60 border border-slate-800 rounded-2xl px-6 py-4 text-[10px] font-black uppercase text-slate-400 outline-none cursor-pointer focus:border-brand-blue/50 tracking-widest italic"
         >
-          <option value="">SEMUA BULAN</option>
+          <option value="">PERIOD: ALL</option>
           {filterOptions.bulans.map(b => <option key={b} value={b}>{b}</option>)}
         </select>
 
         <select 
           value={filters.parameter}
           onChange={e => setFilters({...filters, parameter: e.target.value})}
-          className="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-[10px] font-black uppercase text-slate-900 outline-none cursor-pointer focus:border-emerald-500/50"
+          className="bg-slate-950/60 border border-slate-800 rounded-2xl px-6 py-4 text-[10px] font-black uppercase text-slate-400 outline-none cursor-pointer focus:border-brand-blue/50 tracking-widest italic"
         >
-          <option value="">SEMUA PARAMETER</option>
+          <option value="">CLASS: ALL</option>
           {filterOptions.params.map(p => <option key={p} value={p}>{p}</option>)}
         </select>
 
         <button 
           onClick={() => setFilters({bulan: '', parameter: '', search: ''})}
-          className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-black uppercase rounded-2xl transition-all active:scale-95 border border-slate-200"
+          className="bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[10px] font-black uppercase rounded-2xl transition-all active:scale-95 border border-slate-700 tracking-[0.2em] italic"
         >
-          Reset Filter
+          Reset Parameters
         </button>
       </div>
 
       {/* Modern Table UI */}
-      <div className="bg-white border border-slate-200 rounded-[3rem] overflow-hidden shadow-sm relative">
+      <div className="bg-slate-900/60 border border-slate-800 rounded-[3.5rem] overflow-hidden shadow-2xl backdrop-blur-xl relative">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead className="bg-slate-50">
+            <thead className="bg-slate-950/40">
               <tr>
                 {FIXED_HEADERS.map((h, i) => (
-                  <th key={i} className="px-8 py-6 text-[10px] text-slate-500 uppercase font-black tracking-[0.2em] border-b border-slate-100">
+                  <th key={i} className="px-10 py-8 text-[10px] text-slate-500 uppercase font-black tracking-[0.3em] border-b border-slate-900 italic">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-900">
               {filteredRows.map((row, rowIdx) => (
-                <tr key={rowIdx} className="group hover:bg-emerald-50 transition-all">
+                <tr key={rowIdx} className="group hover:bg-slate-800/40 transition-all">
                   {/* BULAN (A) */}
-                  <td className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase">{row[0] || '-'}</td>
+                  <td className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase italic tracking-widest">{row[0] || '-'}</td>
                   
                   {/* TANGGAL (B) */}
-                  <td className="px-8 py-5 text-[11px] text-slate-600 font-mono">
+                  <td className="px-10 py-6 text-[11px] text-slate-400 font-mono font-black italic">
                     {formatDisplayDate(row[1])}
                   </td>
                   
                   {/* HARI (C) */}
-                  <td className="px-8 py-5 text-[10px] font-bold text-slate-500 uppercase tracking-tight">{row[2] || '-'}</td>
+                  <td className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest italic">{row[2] || '-'}</td>
                   
                   {/* WEEK (D) */}
-                  <td className="px-8 py-5">
-                    <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 uppercase tracking-tighter italic">
+                  <td className="px-10 py-6">
+                    <span className="text-[10px] font-black text-brand-blue bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 uppercase tracking-tighter italic shadow-inner">
                       {row[3] || '-'}
                     </span>
                   </td>
                   
                   {/* PARAMETER (E) */}
-                  <td className="px-8 py-5">
-                    <span className="text-xs font-black text-slate-900 uppercase group-hover:text-emerald-600 transition-colors">
+                  <td className="px-10 py-6">
+                    <span className="text-[11px] font-black text-slate-300 uppercase group-hover:text-brand-blue transition-colors tracking-widest italic">
                       {row[4] || '-'}
                     </span>
                   </td>
                   
                   {/* REVENUE (F) */}
-                  <td className="px-8 py-5 text-right">
-                    <span className="text-sm font-black font-mono text-emerald-600 tracking-tighter">
+                  <td className="px-10 py-6 text-right">
+                    <span className="text-base font-black font-mono text-brand-blue tracking-tighter italic">
                       Rp {parseIDR(row[5]).toLocaleString('id-ID')}
                     </span>
                   </td>
@@ -237,10 +237,10 @@ const RawDataRevenue: React.FC = () => {
               
               {filteredRows.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-8 py-32 text-center">
-                    <div className="flex flex-col items-center gap-4 opacity-30">
-                       <Icons.Dashboard />
-                       <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">No revenue data matches the current filters</p>
+                  <td colSpan={6} className="px-10 py-40 text-center">
+                    <div className="flex flex-col items-center gap-6 opacity-20">
+                       <Icons.Dashboard size={48} />
+                       <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500 italic">Analytical Void: No Data Matches Protocol</p>
                     </div>
                   </td>
                 </tr>
@@ -250,16 +250,16 @@ const RawDataRevenue: React.FC = () => {
         </div>
         
         {/* Footer Metadata */}
-        <div className="p-8 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
-           <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest leading-relaxed">
-                Source Synchronized: Columns A-F Mapping active from Sheet "REVENUE"
+        <div className="p-10 bg-slate-950/40 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-6">
+           <div className="flex items-center gap-4">
+              <span className="w-2.5 h-2.5 rounded-full bg-brand-blue animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+              <p className="text-[9px] text-slate-600 font-black uppercase tracking-[0.4em] italic leading-relaxed">
+                Source Synchronized: Continuous Mapping Active from "REVENUE" Node
               </p>
            </div>
-           <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black text-slate-400">Total Entries:</span>
-              <span className="text-[10px] font-black text-slate-700 bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-sm">
+           <div className="flex items-center gap-4">
+              <span className="text-[10px] font-black text-slate-500 italic uppercase tracking-[0.2em]">Sequence Count:</span>
+              <span className="text-[10px] font-black text-white bg-slate-900 px-6 py-2 rounded-full border border-slate-800 shadow-2xl tracking-[0.2em]">
                 {filteredRows.length} RECORDS
               </span>
            </div>

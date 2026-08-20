@@ -84,142 +84,147 @@ const InputAsset: React.FC = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-5xl mx-auto pb-20">
-      <div className="flex flex-col items-center text-center mb-10">
-        <div className="w-16 h-16 bg-brand-olive/10 rounded-2xl flex items-center justify-center text-brand-olive mb-4 border border-brand-olive/20">
-          <Icons.Growth />
+      <div className="flex flex-col items-center text-center mb-12">
+        <div className="w-20 h-20 bg-slate-900/60 rounded-[2rem] flex items-center justify-center text-brand-olive mb-6 border border-slate-800 shadow-2xl backdrop-blur-md">
+          <Icons.Growth size={32} />
         </div>
-        <h2 className="text-3xl font-black text-slate-900 italic uppercase tracking-tighter">
-          Stock <span className="text-brand-olive">Portfolio Automator</span>
+        <h2 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter">
+          Asset <span className="text-brand-olive">Synchronizer</span>
         </h2>
-        <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.3em] mt-2">
-          Sync dari Aplikasi Sekuritas Iqbal
+        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-3 italic">
+          Multi-Broker Portfolio Node • IQBAL CORE
         </p>
       </div>
 
       {status === 'idle' || status === 'analyzing' || status === 'error' ? (
-        <div className="bg-white/80 border border-brand-brown/10 p-8 rounded-[3rem] backdrop-blur-xl shadow-2xl space-y-8">
+        <div className="bg-slate-900/40 border border-slate-800 p-10 rounded-[3.5rem] backdrop-blur-xl shadow-2xl space-y-10">
           
-          <div className="space-y-4">
-            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest text-center italic">Pilih Sumber Broker :</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] text-center italic">Initialize Protocol Source :</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <button
                 onClick={() => setSelectedBroker('stockbit')}
-                className={`p-6 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-3 group ${
+                className={`p-8 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-4 group relative overflow-hidden ${
                   selectedBroker === 'stockbit' 
-                    ? 'bg-brand-olive/10 border-brand-olive shadow-[0_0_30px_rgba(141,135,65,0.1)]' 
-                    : 'bg-white/50 border-brand-brown/10 hover:border-brand-brown/30'
+                    ? 'bg-brand-olive/10 border-brand-olive shadow-[0_0_50px_rgba(16,185,129,0.15)]' 
+                    : 'bg-slate-950/40 border-slate-800 hover:border-slate-700'
                 }`}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl ${
-                  selectedBroker === 'stockbit' ? 'bg-brand-olive text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl transition-all ${
+                  selectedBroker === 'stockbit' ? 'bg-brand-olive text-white' : 'bg-slate-900 text-slate-600 group-hover:text-slate-400'
                 }`}>
                   S
                 </div>
                 <div className="text-center">
-                  <p className={`font-black uppercase tracking-tighter ${selectedBroker === 'stockbit' ? 'text-slate-900' : 'text-slate-500'}`}>Stockbit Sekuritas</p>
-                  <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-1 italic">Portfolio & Trade Log</p>
+                  <p className={`font-black uppercase tracking-widest text-sm italic ${selectedBroker === 'stockbit' ? 'text-white' : 'text-slate-500'}`}>Stockbit Sekuritas</p>
+                  <p className="text-[8px] text-slate-600 font-black uppercase tracking-[0.2em] mt-1 italic">Portfolio & Execution Logs</p>
                 </div>
               </button>
 
               <button
                 onClick={() => setSelectedBroker('bibit')}
-                className={`p-6 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-3 group ${
+                className={`p-8 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-4 group relative overflow-hidden ${
                   selectedBroker === 'bibit' 
-                    ? 'bg-brand-blue/10 border-brand-blue shadow-[0_0_30px_rgba(101,157,189,0.1)]' 
-                    : 'bg-white/50 border-brand-brown/10 hover:border-brand-brown/30'
+                    ? 'bg-brand-blue/10 border-brand-blue shadow-[0_0_50px_rgba(59,130,246,0.15)]' 
+                    : 'bg-slate-950/40 border-slate-800 hover:border-slate-700'
                 }`}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl ${
-                  selectedBroker === 'bibit' ? 'bg-brand-blue text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl transition-all ${
+                  selectedBroker === 'bibit' ? 'bg-brand-blue text-white' : 'bg-slate-900 text-slate-600 group-hover:text-slate-400'
                 }`}>
                   B
                 </div>
                 <div className="text-center">
-                  <p className={`font-black uppercase tracking-tighter ${selectedBroker === 'bibit' ? 'text-slate-900' : 'text-slate-500'}`}>Bibit Reksadana</p>
-                  <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-1 italic">Aplikasi Bibit</p>
+                  <p className={`font-black uppercase tracking-widest text-sm italic ${selectedBroker === 'bibit' ? 'text-white' : 'text-slate-500'}`}>Bibit Reksadana</p>
+                  <p className="text-[8px] text-slate-600 font-black uppercase tracking-[0.2em] mt-1 italic">Asset Allocation Hub</p>
                 </div>
               </button>
             </div>
           </div>
 
-          <form onSubmit={handleAnalyze} className={`space-y-6 transition-all duration-500 ${selectedBroker ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-30 pointer-events-none'}`}>
+          <form onSubmit={handleAnalyze} className={`space-y-8 transition-all duration-700 ${selectedBroker ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-20 pointer-events-none'}`}>
             <textarea
               value={command}
               onChange={(e) => setCommand(e.target.value)}
-              placeholder={selectedBroker === 'stockbit' ? "Tempel rincian Portfolio atau Trade Log di sini..." : "Tempel rincian Bibit di sini..."}
-              className="w-full bg-white/50 border border-brand-brown/10 rounded-[2rem] px-8 py-8 text-slate-900 focus:outline-none focus:ring-4 focus:ring-brand-olive/10 focus:border-brand-olive/50 transition-all min-h-[250px] resize-none text-lg font-mono placeholder:text-slate-400"
+              placeholder={selectedBroker === 'stockbit' ? "Decrypt Stockbit portfolio or trade log here..." : "Decrypt Bibit asset rincian here..."}
+              className="w-full bg-slate-950/60 border border-slate-800 rounded-[2.5rem] px-8 py-8 text-white focus:outline-none focus:ring-4 focus:ring-brand-blue/50 transition-all min-h-[300px] resize-none text-lg font-bold placeholder:text-slate-700 shadow-inner italic"
             />
             
             <button 
               type="submit"
               disabled={loading || !command.trim() || !selectedBroker}
-              className={`w-full font-black py-5 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 text-lg ${
+              className={`w-full font-black py-6 rounded-[2rem] shadow-2xl transition-all flex items-center justify-center gap-4 text-xl italic uppercase tracking-widest border border-white/10 ${
                 selectedBroker === 'bibit' ? 'bg-brand-blue hover:bg-brand-blue/90' : 'bg-brand-olive hover:bg-brand-olive/90'
-              } disabled:bg-slate-200 disabled:text-slate-400 text-white`}
+              } disabled:bg-slate-800 disabled:text-slate-600 text-white active:scale-95`}
             >
               {status === 'analyzing' ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                  AI SEDANG MENDETEKSI PARAMETER...
+                  <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  DECRYPTING PARAMETERS...
                 </>
-              ) : "SINKRONISASI SEKARANG"}
+              ) : (
+                <>
+                  <Icons.Sparkles />
+                  INITIALIZE SYNC
+                </>
+              )}
             </button>
           </form>
         </div>
       ) : status === 'preview' || status === 'syncing' ? (
-        <div className="space-y-6 animate-in zoom-in-95 duration-500">
-          <div className="bg-white border border-brand-brown/10 rounded-[3rem] overflow-hidden shadow-2xl">
-            <div className="p-8 border-b border-brand-brown/10 bg-brand-cream/10 flex justify-between items-center">
-               <h3 className="text-slate-900 font-black uppercase tracking-widest text-sm italic">
-                 Preview Deteksi Transaksi {selectedBroker?.toUpperCase()}
+        <div className="space-y-8 animate-in zoom-in-95 duration-700">
+          <div className="bg-slate-900/60 border border-slate-800 rounded-[3.5rem] overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="p-10 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
+               <h3 className="text-white font-black uppercase tracking-[0.2em] text-xs italic">
+                 Protocol Preview: {selectedBroker?.toUpperCase()} TRANSACTION STREAM
                </h3>
-               <span className="text-[10px] font-black px-4 py-2 rounded-full border border-brand-olive/20 text-brand-olive bg-brand-olive/10">
-                 {assets.length} ENTRI VALID
+               <span className="text-[10px] font-black px-5 py-2 rounded-xl border border-brand-olive/30 text-brand-olive bg-brand-olive/10 tracking-widest italic">
+                 {assets.length} VALID NODES DETECTED
                </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-slate-50">
+                <thead className="bg-slate-950/60 text-slate-500">
                   {isTransactionData ? (
                     <tr>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black">Trans Date</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black">Stock</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black">Side</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black text-right">Lot</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black text-right">Price</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black text-right">Buy/Sell Value</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black text-right">Tax</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800">Trans Date</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800">Entity</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800">Protocol</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800 text-right">Volume</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800 text-right">Node Price</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800 text-right">Aggregate Value</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800 text-right">System Tax</th>
                     </tr>
                   ) : (
                     <tr>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black">Ticker</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black text-right">Lembar</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black text-right">Modal</th>
-                      <th className="px-6 py-4 text-[9px] text-slate-500 uppercase font-black text-right">Equity</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800">Identifier</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800 text-right">Units</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800 text-right">Capital Cost</th>
+                      <th className="px-10 py-6 text-[9px] uppercase font-black tracking-widest italic border-b border-slate-800 text-right">Current Equity</th>
                     </tr>
                   )}
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-800/60">
                   {assets.map((a, i) => (
-                    <tr key={i} className="hover:bg-brand-olive/5 transition-colors">
+                    <tr key={i} className="hover:bg-slate-800/20 transition-all">
                       {isTransactionData ? (
                         <>
-                          <td className="px-6 py-4 text-xs text-slate-500 font-mono">{a.transDate}</td>
-                          <td className="px-6 py-4 font-black text-slate-900">{a.name}</td>
-                          <td className={`px-6 py-4 text-[10px] font-black ${a.side === 'BUY' ? 'text-brand-olive' : 'text-rose-500'}`}>{a.side}</td>
-                          <td className="px-6 py-4 text-right font-mono text-xs text-slate-600">{(a.lot || 0).toLocaleString()}</td>
-                          <td className="px-6 py-4 text-right font-mono text-xs text-slate-600">Rp{(a.price || 0).toLocaleString()}</td>
-                          <td className={`px-6 py-4 text-right font-mono text-xs font-black ${a.side === 'BUY' ? 'text-brand-olive' : 'text-rose-500'}`}>
+                          <td className="px-10 py-5 text-[10px] text-slate-500 font-mono font-black italic">{a.transDate}</td>
+                          <td className="px-10 py-5 font-black text-white italic tracking-widest uppercase">{a.name}</td>
+                          <td className={`px-10 py-5 text-[10px] font-black italic tracking-widest ${a.side === 'BUY' ? 'text-brand-olive' : 'text-brand-peach'}`}>{a.side}</td>
+                          <td className="px-10 py-5 text-right font-mono text-[10px] text-slate-400 font-black italic">{(a.lot || 0).toLocaleString()}</td>
+                          <td className="px-10 py-5 text-right font-mono text-[10px] text-slate-400 font-black italic">Rp{(a.price || 0).toLocaleString()}</td>
+                          <td className={`px-10 py-5 text-right font-mono text-xs font-black italic tracking-tighter ${a.side === 'BUY' ? 'text-brand-olive' : 'text-brand-peach'}`}>
                             Rp{(a.side === 'BUY' ? a.buyValue : a.sellValue).toLocaleString()}
                           </td>
-                          <td className="px-6 py-4 text-right font-mono text-xs text-slate-400">Rp{(a.salesTax || 0).toLocaleString()}</td>
+                          <td className="px-10 py-5 text-right font-mono text-[10px] text-slate-700 font-black italic">Rp{(a.salesTax || 0).toLocaleString()}</td>
                         </>
                       ) : (
                         <>
-                          <td className="px-6 py-4 font-black text-slate-900">{a.name}</td>
-                          <td className="px-6 py-4 text-right font-mono text-xs text-slate-500">{(a.amount || 0).toLocaleString()}</td>
-                          <td className="px-6 py-4 text-right font-mono text-xs text-slate-500">Rp{(a.invest || 0).toLocaleString()}</td>
-                          <td className="px-6 py-4 text-right font-mono text-sm font-black text-brand-olive">Rp{(a.equity || 0).toLocaleString()}</td>
+                          <td className="px-10 py-6 font-black text-white italic tracking-widest uppercase text-xs">{a.name}</td>
+                          <td className="px-10 py-6 text-right font-mono text-[10px] text-slate-500 font-black italic">{(a.amount || 0).toLocaleString()}</td>
+                          <td className="px-10 py-6 text-right font-mono text-[10px] text-slate-500 font-black italic">Rp{(a.invest || 0).toLocaleString()}</td>
+                          <td className="px-10 py-6 text-right font-mono text-base font-black text-brand-olive tracking-tighter italic">Rp{(a.equity || 0).toLocaleString()}</td>
                         </>
                       )}
                     </tr>
@@ -229,35 +234,45 @@ const InputAsset: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex gap-4">
+          <div className="flex gap-6">
             <button 
               onClick={() => setStatus('idle')}
-              className="flex-1 py-5 bg-white border border-brand-brown/10 text-slate-500 font-black uppercase rounded-2xl hover:bg-slate-50"
+              className="flex-1 py-6 bg-slate-800 text-slate-400 font-black uppercase rounded-[2rem] hover:bg-slate-700 hover:text-white transition-all active:scale-95 italic border border-slate-700 tracking-widest shadow-xl"
             >
-              Edit Data
+              Modify Extraction
             </button>
             <button 
               onClick={handleBulkSync}
-              className="flex-[2] py-5 bg-brand-olive text-white font-black uppercase rounded-2xl shadow-xl flex items-center justify-center gap-3"
+              className="flex-[2] py-6 bg-brand-olive text-white font-black uppercase rounded-[2rem] shadow-2xl flex items-center justify-center gap-4 active:scale-95 italic tracking-widest border border-white/10"
             >
-              {status === 'syncing' ? "SEDANG MENYIMPAN..." : "SIMPAN KE SPREADSHEET"}
+              {status === 'syncing' ? (
+                <>
+                  <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  UPLOADING TO CLOUD...
+                </>
+              ) : (
+                <>
+                  <Icons.Masterdata />
+                  COMMIT TO CENTRAL SPREADSHEET
+                </>
+              )}
             </button>
           </div>
         </div>
       ) : (
-        <div className="bg-white border border-brand-olive/30 p-16 rounded-[3rem] text-center shadow-2xl animate-in zoom-in">
-           <div className="w-20 h-20 bg-brand-olive/20 rounded-full flex items-center justify-center mx-auto mb-6 text-brand-olive">
-              <Icons.Sparkles />
+        <div className="bg-slate-900 border border-brand-olive/30 p-20 rounded-[4rem] text-center shadow-2xl animate-in zoom-in duration-700 backdrop-blur-xl">
+           <div className="w-24 h-24 bg-brand-olive/20 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-brand-olive border border-brand-olive/20 shadow-2xl shadow-brand-olive/20 rotate-12">
+              <Icons.Sparkles size={32} />
            </div>
-           <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter mb-4">Berhasil Sinkron!</h3>
-           <p className="text-slate-500 text-sm font-medium italic mb-10 uppercase tracking-widest">
-             Seluruh data {selectedBroker} telah dipindahkan ke Spreadsheet Iqbal.
+           <h3 className="text-4xl font-black text-white uppercase tracking-tighter mb-4 italic">Synchronization Complete</h3>
+           <p className="text-slate-500 text-xs font-black italic mb-12 uppercase tracking-[0.4em] leading-relaxed">
+             All transaction nodes from {selectedBroker} have been successfully indexed in IQBAL CENTRAL LEDGER.
            </p>
            <button 
              onClick={() => setStatus('idle')}
-             className="px-10 py-4 bg-brand-olive text-white font-black uppercase rounded-2xl hover:bg-brand-olive/90 transition-all shadow-xl"
+             className="px-14 py-6 bg-brand-olive text-white font-black uppercase rounded-[2rem] hover:bg-brand-olive/90 transition-all shadow-2xl shadow-brand-olive/30 italic tracking-widest active:scale-95 border border-white/10"
            >
-             Selesai
+             Protocol Finished
            </button>
         </div>
       )}

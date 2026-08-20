@@ -118,113 +118,122 @@ const InvestasiDashboard: React.FC = () => {
     <div className="space-y-8 pb-20 animate-in fade-in duration-700">
       <header className="flex flex-col md:flex-row justify-between items-start gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter">Investasi</h1>
-          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1 italic">Visualisasi Portofolio Investasi Iqbal</p>
+          <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">
+            Capital <span className="text-brand-olive">Deployment</span>
+          </h1>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-1 italic">Portfolio Analytics • Real-time Valuation</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 bg-slate-900/40 p-2 rounded-2xl border border-slate-800 backdrop-blur-xl shadow-2xl">
           <select 
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="bg-white border border-brand-brown/10 rounded-xl px-4 py-2.5 text-xs font-black text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-olive/50 uppercase tracking-widest"
+            className="bg-slate-950/60 border border-slate-800 rounded-xl px-5 py-2.5 text-[10px] font-black text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-olive/50 uppercase tracking-widest shadow-inner"
           >
-            <option value="ALL">SEMUA BULAN</option>
+            <option value="ALL">ALL PERIODS</option>
             {monthsOrder.map(m => (
               <option key={m} value={m}>{m}</option>
             ))}
           </select>
           <button 
             onClick={fetchData}
-            className="p-2.5 bg-white border border-brand-brown/10 rounded-xl text-slate-400 hover:text-brand-olive transition-colors shadow-lg active:scale-95"
+            className="p-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400 hover:text-brand-olive transition-all shadow-xl active:scale-95"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
         </div>
       </header>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border border-brand-brown/10 p-8 rounded-[2.5rem] border-l-8 border-l-brand-olive shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
-          <div>
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2 italic">Total Dana Investasi</p>
-            <h2 className="text-4xl font-black text-slate-900 font-mono tracking-tighter">Rp {analytics.totalFund.toLocaleString()}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-slate-900/60 border border-slate-800 p-10 rounded-[3.5rem] border-l-8 border-l-brand-olive shadow-2xl backdrop-blur-md flex flex-col md:flex-row justify-between items-center gap-8 group relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2 italic">Aggregated Principal</p>
+            <h2 className="text-4xl font-black text-white font-mono tracking-tighter italic">Rp {analytics.totalFund.toLocaleString()}</h2>
           </div>
-          <div className="flex gap-4">
-            <div className="bg-brand-olive/10 px-6 py-3 rounded-2xl border border-brand-olive/20 text-center">
-              <p className="text-[8px] text-brand-olive font-black uppercase tracking-widest mb-1">Managers</p>
-              <p className="text-slate-900 font-bold">{analytics.managerData.length}</p>
+          <div className="flex gap-4 relative z-10">
+            <div className="bg-slate-950/60 px-6 py-4 rounded-2xl border border-slate-800 text-center shadow-inner">
+              <p className="text-[8px] text-brand-olive font-black uppercase tracking-widest mb-1 italic opacity-80">Managers</p>
+              <p className="text-white font-black italic">{analytics.managerData.length}</p>
             </div>
-            <div className="bg-brand-blue/10 px-6 py-3 rounded-2xl border border-brand-blue/20 text-center">
-              <p className="text-[8px] text-brand-blue font-black uppercase tracking-widest mb-1">Asset Types</p>
-              <p className="text-slate-900 font-bold">{analytics.typeData.length}</p>
+            <div className="bg-slate-950/60 px-6 py-4 rounded-2xl border border-slate-800 text-center shadow-inner">
+              <p className="text-[8px] text-brand-blue font-black uppercase tracking-widest mb-1 italic opacity-80">Sectors</p>
+              <p className="text-white font-black italic">{analytics.typeData.length}</p>
             </div>
+          </div>
+          <div className="absolute -bottom-6 -right-6 opacity-5 group-hover:scale-110 transition-transform duration-500 text-brand-olive pointer-events-none">
+            <Icons.Growth size={120} />
           </div>
         </div>
 
-        <div className="bg-white border border-brand-brown/10 p-8 rounded-[2.5rem] border-l-8 border-l-brand-blue shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
-          <div>
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2 italic">Total Equity (Market Value)</p>
-            <h2 className="text-4xl font-black text-brand-blue font-mono tracking-tighter">Rp {analytics.totalEquity.toLocaleString()}</h2>
+        <div className="bg-slate-900/60 border border-slate-800 p-10 rounded-[3.5rem] border-l-8 border-l-brand-blue shadow-2xl backdrop-blur-md flex flex-col md:flex-row justify-between items-center gap-8 group relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2 italic">Current Equity Value</p>
+            <h2 className="text-4xl font-black text-brand-blue font-mono tracking-tighter italic">Rp {analytics.totalEquity.toLocaleString()}</h2>
           </div>
-          <div className="bg-brand-blue/10 px-6 py-3 rounded-2xl border border-brand-blue/20 text-center">
-            <p className="text-[8px] text-brand-blue font-black uppercase tracking-widest mb-1">Growth</p>
-            <p className={`font-bold ${analytics.totalEquity - analytics.totalFund >= 0 ? 'text-brand-olive' : 'text-brand-peach'}`}>
+          <div className="bg-slate-950/60 px-8 py-4 rounded-2xl border border-slate-800 text-center shadow-inner relative z-10">
+            <p className="text-[8px] text-brand-blue font-black uppercase tracking-widest mb-1 italic opacity-80">Portfolio Yield</p>
+            <p className={`font-black text-lg italic ${analytics.totalEquity - analytics.totalFund >= 0 ? 'text-brand-olive' : 'text-brand-peach'}`}>
               {analytics.totalFund > 0 ? (((analytics.totalEquity - analytics.totalFund) / analytics.totalFund) * 100).toFixed(2) : 0}%
             </p>
+          </div>
+          <div className="absolute -bottom-6 -right-6 opacity-5 group-hover:scale-110 transition-transform duration-500 text-brand-blue pointer-events-none">
+            <Icons.TrendingUp size={120} />
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Manager Distribution Chart */}
-        <div className="bg-white/80 border border-brand-brown/10 p-8 rounded-[2.5rem] backdrop-blur-md">
-          <h3 className="text-slate-900 font-bold uppercase tracking-widest text-xs mb-8 flex items-center gap-2">
-            <Icons.Masterdata /> Distribution by Fund Manager
+        <div className="bg-slate-900/40 border border-slate-800 p-10 rounded-[3.5rem] backdrop-blur-xl shadow-2xl">
+          <h3 className="text-white font-black uppercase tracking-[0.3em] text-[10px] mb-10 flex items-center gap-3 italic opacity-80">
+            <Icons.Masterdata /> Custodian Distribution Log
           </h3>
-          <div className="h-[300px]">
+          <div className="h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={analytics.managerData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={5}
+                  innerRadius={70}
+                  outerRadius={110}
+                  paddingAngle={8}
                   dataKey="value"
+                  stroke="none"
                 >
                   {analytics.managerData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} shadow="0 10px 20px rgba(0,0,0,0.5)" />
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px'}}
-                  itemStyle={{fontWeight: 'bold'}}
+                  contentStyle={{backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', fontSize: '12px', color: '#fff'}}
+                  itemStyle={{fontWeight: '900', textTransform: 'uppercase'}}
                   formatter={(value: number) => `Rp ${value.toLocaleString()}`}
                 />
-                <Legend verticalAlign="bottom" height={36}/>
+                <Legend verticalAlign="bottom" height={36} iconType="circle" />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Type Distribution Chart */}
-        <div className="bg-white/80 border border-brand-brown/10 p-8 rounded-[2.5rem] backdrop-blur-md">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-slate-900 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-              <Icons.Analytics /> Distribution by Asset Type
+        <div className="bg-slate-900/40 border border-slate-800 p-10 rounded-[3.5rem] backdrop-blur-xl shadow-2xl">
+          <div className="flex justify-between items-center mb-10">
+            <h3 className="text-white font-black uppercase tracking-[0.3em] text-[10px] flex items-center gap-3 italic opacity-80">
+              <Icons.Analytics /> Strategic Asset Allocation
             </h3>
             {selectedType && (
               <button 
                 onClick={() => setSelectedType(null)}
-                className="text-[9px] font-black text-brand-olive uppercase tracking-widest bg-brand-olive/10 px-3 py-1 rounded-lg border border-brand-olive/20 hover:bg-brand-olive hover:text-white transition-all"
+                className="text-[9px] font-black text-brand-olive uppercase tracking-widest bg-brand-olive/10 px-4 py-1.5 rounded-xl border border-brand-olive/20 hover:bg-brand-olive hover:text-white transition-all italic shadow-lg"
               >
-                Reset
+                Reset Stream
               </button>
             )}
           </div>
-          <div className="h-[300px]">
+          <div className="h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 data={analytics.typeData} 
@@ -235,61 +244,62 @@ const InvestasiDashboard: React.FC = () => {
                   }
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={true} vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={true} vertical={false} />
                 <XAxis type="number" hide />
-                <YAxis dataKey="name" type="category" stroke="#94a3b8" fontSize={10} width={100} tickLine={false} axisLine={false} />
+                <YAxis dataKey="name" type="category" stroke="#64748b" fontSize={10} width={110} tickLine={false} axisLine={false} fontStyle="italic" fontWeight="bold" />
                 <Tooltip 
-                  cursor={{fill: 'rgba(0,0,0,0.02)'}}
-                  contentStyle={{backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px'}}
-                  itemStyle={{fontWeight: 'bold'}}
+                  cursor={{fill: 'rgba(255,255,255,0.02)'}}
+                  contentStyle={{backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', fontSize: '12px', color: '#fff'}}
+                  itemStyle={{fontWeight: '900', textTransform: 'uppercase'}}
                   formatter={(value: number) => `Rp ${value.toLocaleString()}`}
                 />
-                <Bar dataKey="value" fill="#8D8741" radius={[0, 4, 4, 0]} className="cursor-pointer">
+                <Bar dataKey="value" fill="#10B981" radius={[0, 8, 8, 0]} className="cursor-pointer">
                   {analytics.typeData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fillOpacity={selectedType && entry.name !== selectedType ? 0.3 : 1}
+                      fillOpacity={selectedType && entry.name !== selectedType ? 0.2 : 1}
+                      fill={CHART_COLORS[index % CHART_COLORS.length]}
                     />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-center text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-4 italic">
-            💡 Tip: Klik batang untuk melihat detail database.
+          <p className="text-center text-[9px] text-slate-600 font-black uppercase tracking-[0.3em] mt-6 italic opacity-50">
+            Click segments for vertical data stream
           </p>
         </div>
       </div>
 
       {/* Type Database Table */}
       {selectedType && (
-        <div className="bg-white border border-brand-brown/10 rounded-[2.5rem] overflow-hidden shadow-xl animate-in slide-in-from-top-4 duration-500">
-          <div className="p-6 bg-brand-cream/30 border-b border-brand-brown/10 flex justify-between items-center">
+        <div className="bg-slate-900/60 border border-slate-800 rounded-[3rem] overflow-hidden shadow-2xl animate-in slide-in-from-top-4 duration-500 backdrop-blur-md">
+          <div className="p-8 bg-slate-950/40 border-b border-slate-800 flex justify-between items-center">
             <div>
-              <h3 className="text-slate-900 font-black uppercase tracking-widest text-xs">Asset Database: <span className="text-brand-olive">{selectedType}</span></h3>
-              <p className="text-slate-500 text-[9px] uppercase font-bold mt-1 tracking-widest italic">Data Mentah dari Spreadsheet Investasi</p>
+              <h3 className="text-white font-black uppercase tracking-[0.3em] text-xs italic">Asset Stream: <span className="text-brand-olive">{selectedType}</span></h3>
+              <p className="text-slate-500 text-[9px] uppercase font-black mt-1 tracking-[0.3em] italic">Granular Database Extraction</p>
             </div>
-            <button onClick={() => setSelectedType(null)} className="text-slate-500 hover:text-brand-olive transition-colors">
+            <button onClick={() => setSelectedType(null)} className="text-slate-500 hover:text-white transition-colors p-2 bg-slate-800 rounded-xl">
               <Icons.Close />
             </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[10px]">
-              <thead className="bg-brand-cream/20">
+              <thead className="bg-slate-950/40">
                 <tr>
-                  <th className="p-4 text-slate-500 uppercase font-black tracking-widest">Bulan</th>
-                  <th className="p-4 text-slate-500 uppercase font-black tracking-widest">Manager</th>
-                  <th className="p-4 text-slate-500 uppercase font-black tracking-widest text-right">Fund (Invest)</th>
-                  <th className="p-4 text-slate-500 uppercase font-black tracking-widest text-right">Equity (Market)</th>
+                  <th className="p-6 text-slate-500 uppercase font-black tracking-[0.2em] italic">Period</th>
+                  <th className="p-6 text-slate-500 uppercase font-black tracking-[0.2em] italic">Fund Manager</th>
+                  <th className="p-6 text-slate-500 uppercase font-black tracking-[0.2em] italic text-right">Principal Invested</th>
+                  <th className="p-6 text-slate-500 uppercase font-black tracking-[0.2em] italic text-right">Market Equity</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-brand-brown/5">
+              <tbody className="divide-y divide-slate-800">
                 {typeTransactions.map((row, i) => (
-                  <tr key={i} className="hover:bg-brand-olive/5 transition-all group">
-                    <td className="p-4 font-bold text-slate-700">{row[0]}</td>
-                    <td className="p-4 text-slate-600">{row[2]}</td>
-                    <td className="p-4 text-right font-mono text-slate-600">Rp {parseNum(row[3]).toLocaleString()}</td>
-                    <td className="p-4 text-right font-mono text-brand-blue font-bold">Rp {parseNum(row[5]).toLocaleString()}</td>
+                  <tr key={i} className="hover:bg-slate-800/40 transition-all group">
+                    <td className="p-6 font-black text-slate-300 italic">{row[0]}</td>
+                    <td className="p-6 text-slate-500 font-black uppercase tracking-widest italic">{row[2]}</td>
+                    <td className="p-6 text-right font-mono text-slate-400 font-black italic">Rp {parseNum(row[3]).toLocaleString()}</td>
+                    <td className="p-6 text-right font-mono text-brand-blue font-black italic text-sm">Rp {parseNum(row[5]).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -299,24 +309,24 @@ const InvestasiDashboard: React.FC = () => {
       )}
 
       {/* Trend Chart */}
-      <div className="bg-white/80 border border-brand-brown/10 p-8 rounded-[2.5rem] backdrop-blur-md">
-        <h3 className="text-slate-900 font-bold uppercase tracking-widest text-xs mb-8 flex items-center gap-2">
-          <Icons.TrendingUp /> Investment & Equity Trend by Month
+      <div className="bg-slate-900/40 border border-slate-800 p-12 rounded-[3.5rem] backdrop-blur-xl shadow-2xl">
+        <h3 className="text-white font-black uppercase tracking-[0.3em] text-[10px] mb-12 flex items-center gap-3 italic opacity-80">
+          <Icons.TrendingUp /> Temporal Equity Trajectory
         </h3>
-        <div className="h-[300px]">
+        <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={analytics.monthData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `Rp${(val/1000000).toFixed(0)}M`} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} fontStyle="italic" fontWeight="bold" />
+              <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `Rp${(val/1000000).toFixed(0)}M`} fontStyle="italic" fontWeight="bold" />
               <Tooltip 
-                contentStyle={{backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px'}}
-                itemStyle={{fontWeight: 'bold'}}
+                contentStyle={{backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', fontSize: '12px', color: '#fff'}}
+                itemStyle={{fontWeight: '900', textTransform: 'uppercase'}}
                 formatter={(value: number) => `Rp ${value.toLocaleString()}`}
               />
-              <Legend />
-              <Line name="Total Fund" type="monotone" dataKey="fund" stroke="#8D8741" strokeWidth={4} dot={{ r: 6, fill: '#8D8741' }} activeDot={{ r: 8 }} />
-              <Line name="Total Equity" type="monotone" dataKey="equity" stroke="#659DBD" strokeWidth={4} dot={{ r: 6, fill: '#659DBD' }} activeDot={{ r: 8 }} />
+              <Legend iconType="rect" />
+              <Line name="Principal Stream" type="monotone" dataKey="fund" stroke="#10B981" strokeWidth={5} dot={{ r: 6, fill: '#10B981', strokeWidth: 2, stroke: '#020617' }} activeDot={{ r: 10, shadow: '0 0 20px #10b981' }} />
+              <Line name="Equity Valuation" type="monotone" dataKey="equity" stroke="#3B82F6" strokeWidth={5} dot={{ r: 6, fill: '#3B82F6', strokeWidth: 2, stroke: '#020617' }} activeDot={{ r: 10, shadow: '0 0 20px #3b82f6' }} />
             </LineChart>
           </ResponsiveContainer>
         </div>

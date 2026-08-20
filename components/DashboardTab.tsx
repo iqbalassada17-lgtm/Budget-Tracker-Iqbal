@@ -170,17 +170,17 @@ const DashboardTab: React.FC = () => {
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row justify-between items-start gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter">
-            Dashboard <span className="text-brand-peach">Cost</span>
+          <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">
+            Strategic <span className="text-brand-peach">Cost Matrix</span>
           </h1>
-          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1 italic">Normalized Filter Applied</p>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 italic">Real-time analysis active</p>
         </div>
         
-        <div className="flex flex-wrap gap-2 bg-white p-2 rounded-xl border border-brand-brown/10 shadow-sm">
+        <div className="flex flex-wrap gap-2 bg-slate-900/40 p-2 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-xl">
           <select 
             value={selectedMonth} 
             onChange={e => setSelectedMonth(e.target.value)}
-            className="bg-brand-cream/20 text-[10px] text-slate-900 px-3 py-1.5 rounded-lg border border-brand-brown/10 focus:outline-none focus:ring-1 focus:ring-brand-peach/50"
+            className="bg-slate-950/60 text-[10px] text-slate-300 px-4 py-2 rounded-xl border border-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-peach/50 font-bold"
           >
             <option value="">SEMUA BULAN</option>
             {uniqueMonths.map(m => <option key={m} value={m}>{m}</option>)}
@@ -189,52 +189,52 @@ const DashboardTab: React.FC = () => {
           <select 
             value={selectedCOA || ''} 
             onChange={e => setSelectedCOA(e.target.value || null)}
-            className="bg-brand-cream/20 text-[10px] text-slate-900 px-3 py-1.5 rounded-lg border border-brand-brown/10 focus:outline-none focus:ring-1 focus:ring-brand-peach/50"
+            className="bg-slate-950/60 text-[10px] text-slate-300 px-4 py-2 rounded-xl border border-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-peach/50 font-bold"
           >
             <option value="">SEMUA KATEGORI</option>
             {uniqueCOAs.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
 
-          <div className="w-px h-6 bg-brand-brown/10 self-center hidden md:block"></div>
+          <div className="w-px h-6 bg-slate-800 self-center hidden md:block"></div>
 
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-brand-cream/20 text-[10px] text-slate-900 px-2 py-1.5 rounded-lg border border-brand-brown/10" />
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-brand-cream/20 text-[10px] text-slate-900 px-2 py-1.5 rounded-lg border border-brand-brown/10" />
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-slate-950/60 text-[10px] text-slate-300 px-3 py-2 rounded-xl border border-slate-800 font-bold" />
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-slate-950/60 text-[10px] text-slate-300 px-3 py-2 rounded-xl border border-slate-800 font-bold" />
           
-          <button onClick={() => {setStartDate(''); setEndDate(''); setSelectedMonth(''); setSelectedCOA(null); setSelectedDate(null); fetchData();}} className="text-[10px] bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-lg font-bold text-slate-700 transition-colors">Reset</button>
+          <button onClick={() => {setStartDate(''); setEndDate(''); setSelectedMonth(''); setSelectedCOA(null); setSelectedDate(null); fetchData();}} className="text-[10px] bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl font-black text-white uppercase tracking-widest transition-all">Reset</button>
         </div>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border border-brand-brown/10 p-8 rounded-[2rem] border-l-8 border-l-brand-peach shadow-sm relative overflow-hidden group">
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2 italic">Total Pengeluaran Filtered</p>
-          <h2 className="text-3xl font-black text-slate-900 font-mono tracking-tighter">Rp {analytics.total.toLocaleString('id-ID')}</h2>
-          <div className="absolute -bottom-4 -right-4 opacity-5 group-hover:scale-110 transition-transform duration-500">
+        <div className="bg-slate-900/60 border border-slate-800 p-8 rounded-[3rem] border-l-8 border-l-brand-peach shadow-2xl backdrop-blur-md relative overflow-hidden group">
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2 italic">Gross Expenditure</p>
+          <h2 className="text-4xl font-black text-white font-mono tracking-tighter italic">Rp {analytics.total.toLocaleString('id-ID')}</h2>
+          <div className="absolute -bottom-4 -right-4 opacity-5 group-hover:scale-110 transition-transform duration-500 text-brand-peach">
             <Icons.Analytics />
           </div>
         </div>
 
-        <div className="bg-white border border-brand-brown/10 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group border-l-8 border-l-brand-olive">
+        <div className="bg-slate-900/60 border border-slate-800 p-8 rounded-[3rem] shadow-2xl backdrop-blur-md relative overflow-hidden group border-l-8 border-l-brand-olive">
           <div className="relative z-10">
-            <p className="text-brand-olive text-[10px] font-black uppercase tracking-widest mb-3 flex items-center gap-2">
-              <span className="w-2 h-2 bg-brand-olive rounded-full animate-pulse"></span>
-              TOP SPENDING CATEGORY
+            <p className="text-brand-olive text-[10px] font-black uppercase tracking-[0.3em] mb-3 flex items-center gap-2 italic">
+              <span className="w-2.5 h-2.5 bg-brand-olive rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></span>
+              TOP SECTOR ALLOCATION
             </p>
             {analytics.topCOA ? (
               <>
-                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2 truncate group-hover:text-brand-olive transition-colors" title={analytics.topCOA.name}>
+                <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-2 truncate group-hover:text-brand-olive transition-colors italic" title={analytics.topCOA.name}>
                   {analytics.topCOA.name}
                 </h2>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-slate-900 font-mono font-black text-xl">
+                <div className="flex items-baseline gap-3">
+                  <p className="text-white font-mono font-black text-2xl italic">
                     Rp {analytics.topCOA.value.toLocaleString('id-ID')}
                   </p>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">
                     ({((analytics.topCOA.value / (analytics.total || 1)) * 100).toFixed(1)}%)
                   </p>
                 </div>
               </>
             ) : (
-              <p className="text-slate-500 italic text-sm font-bold uppercase tracking-widest opacity-30">No data available.</p>
+              <p className="text-slate-600 italic text-sm font-black uppercase tracking-[0.3em] opacity-30">NO DATA STREAM</p>
             )}
           </div>
           <div className="absolute -bottom-6 -right-6 opacity-5 group-hover:scale-125 group-hover:rotate-12 transition-all duration-700 text-brand-olive">
@@ -243,72 +243,72 @@ const DashboardTab: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-brand-brown/10 p-8 rounded-[2.5rem] shadow-sm">
-        <h3 className="text-slate-900 font-bold mb-8 uppercase tracking-widest text-xs flex items-center gap-3">
+      <div className="bg-slate-900/40 border border-slate-800 p-10 rounded-[3.5rem] shadow-2xl backdrop-blur-xl">
+        <h3 className="text-white font-black mb-10 uppercase tracking-[0.4em] text-xs flex items-center gap-3 italic">
           <Icons.Growth />
-          Spending Trend Evolution
+          TREND SPENDING
         </h3>
-        <div className="h-[300px]">
+        <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={analytics.trend} onClick={(d) => d && d.activeLabel && setSelectedDate(selectedDate === d.activeLabel ? null : d.activeLabel)}>
               <defs>
                 <linearGradient id="colorCost" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#DAAD86" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#DAAD86" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#F59E0B" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickFormatter={(val) => formatDisplayDate(val)} tickLine={false} axisLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `Rp${(val/1000).toFixed(0)}k`} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickFormatter={(val) => formatDisplayDate(val)} tickLine={false} axisLine={false} fontStyle="italic" fontWeight="bold" />
+              <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `Rp${(val/1000).toFixed(0)}k`} fontStyle="italic" fontWeight="bold" />
               <Tooltip 
                 labelFormatter={(val) => formatDisplayDate(val)}
-                contentStyle={{backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
-                itemStyle={{color: '#DAAD86', fontWeight: 'bold'}}
+                contentStyle={{backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', fontSize: '12px', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)', color: '#fff'}}
+                itemStyle={{color: '#F59E0B', fontWeight: '900', textTransform: 'uppercase'}}
               />
-              <Area type="monotone" dataKey="total" stroke="#DAAD86" fill="url(#colorCost)" strokeWidth={3} />
+              <Area type="monotone" dataKey="total" stroke="#F59E0B" fill="url(#colorCost)" strokeWidth={4} dot={{r: 4, fill: '#F59E0B', strokeWidth: 2, stroke: '#020617'}} activeDot={{r: 8, shadow: '0 0 20px #f59e0b'}} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="bg-white border border-brand-brown/10 rounded-[2.5rem] overflow-hidden shadow-sm">
-        <div className="p-6 bg-brand-cream/20 border-b border-brand-brown/10 flex justify-between items-center">
-          <h3 className="text-slate-900 font-bold uppercase tracking-widest text-xs italic">
-            Filtered Transaction Log
+      <div className="bg-slate-900/60 border border-slate-800 rounded-[3rem] overflow-hidden shadow-2xl backdrop-blur-md">
+        <div className="p-8 bg-slate-950/40 border-b border-slate-800 flex justify-between items-center">
+          <h3 className="text-white font-black uppercase tracking-[0.3em] text-xs italic">
+            Personal Cost Stream (Terupdate)
             {!analytics.isFilterActive && analytics.tableRows.length > 0 && (
-              <span className="ml-2 text-brand-peach normal-case font-medium tracking-normal"> (Latest Day Only)</span>
+              <span className="ml-2 text-brand-peach normal-case font-bold tracking-normal italic opacity-80"> (T-0 Latest Batch)</span>
             )}
           </h3>
-          <span className="bg-white px-3 py-1.5 rounded-full text-[10px] text-slate-500 font-black tracking-widest border border-brand-brown/10">
-            {analytics.tableRows.length} RECORDS FOUND
+          <span className="bg-slate-900 px-4 py-2 rounded-xl text-[10px] text-slate-400 font-black tracking-widest border border-slate-800 shadow-inner">
+            {analytics.tableRows.length} RECORDS INDEXED
           </span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-brand-cream/10">
+            <thead className="bg-slate-950/40">
               <tr>
-                <th className="p-6 text-slate-500 uppercase font-black tracking-widest">Date</th>
-                <th className="p-6 text-slate-500 uppercase font-black tracking-widest">COA Category</th>
-                <th className="p-6 text-slate-500 uppercase font-black tracking-widest">Description</th>
-                <th className="p-6 text-slate-500 uppercase font-black tracking-widest text-right">Amount</th>
+                <th className="p-8 text-slate-500 uppercase font-black tracking-[0.2em] italic">Timestamp</th>
+                <th className="p-8 text-slate-500 uppercase font-black tracking-[0.2em] italic">Classification</th>
+                <th className="p-8 text-slate-500 uppercase font-black tracking-[0.2em] italic">Description</th>
+                <th className="p-8 text-slate-500 uppercase font-black tracking-[0.2em] italic text-right">Amount (IDR)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-brand-brown/5">
+            <tbody className="divide-y divide-slate-800">
               {analytics.tableRows.map((r, i) => (
-                <tr key={i} className="hover:bg-brand-peach/5 transition-colors group">
-                  <td className="p-6 text-slate-500 font-mono tracking-tighter">{formatDisplayDate(r[analytics.DATE_IDX])}</td>
-                  <td className="p-6">
-                    <span className="font-black text-slate-700 uppercase group-hover:text-brand-peach transition-colors tracking-widest">{r[analytics.COA_IDX]}</span>
+                <tr key={i} className="hover:bg-slate-800/40 transition-all group">
+                  <td className="p-8 text-slate-400 font-mono tracking-tighter">{formatDisplayDate(r[analytics.DATE_IDX])}</td>
+                  <td className="p-8">
+                    <span className="font-black text-slate-300 uppercase group-hover:text-brand-peach transition-colors tracking-widest italic">{r[analytics.COA_IDX]}</span>
                   </td>
-                  <td className="p-6 text-slate-500 italic font-medium">{r[analytics.DESC_IDX]}</td>
-                  <td className="p-6 text-right font-mono font-bold text-brand-peach">
+                  <td className="p-8 text-slate-500 italic font-medium group-hover:text-slate-300 transition-colors">{r[analytics.DESC_IDX]}</td>
+                  <td className="p-8 text-right font-mono font-black text-brand-peach text-sm italic">
                     Rp {parseIDRCurrency(r[analytics.COST_IDX]).toLocaleString('id-ID')}
                   </td>
                 </tr>
               ))}
               {analytics.tableRows.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="p-20 text-center text-slate-400 font-bold uppercase italic tracking-[0.3em] opacity-30">No matching data.</td>
+                  <td colSpan={4} className="p-24 text-center text-slate-600 font-black uppercase italic tracking-[0.4em] opacity-20">NULL DATA SET</td>
                 </tr>
               )}
             </tbody>

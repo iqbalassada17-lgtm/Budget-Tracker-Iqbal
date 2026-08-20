@@ -11,28 +11,28 @@ const MasterList: React.FC = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-10">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Master <span className="text-sky-600">Data</span></h2>
-          <p className="text-slate-500 text-sm">Daftar referensi akun dan kategori sistem.</p>
+          <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Master <span className="text-brand-blue">Registry</span></h2>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-1 italic">System Reference & COA Mapping</p>
         </div>
       </div>
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-slate-50 border-b border-slate-200">
+      <div className="bg-slate-900/60 border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl backdrop-blur-xl">
+        <table className="w-full text-left border-collapse text-[11px]">
+          <thead className="bg-slate-950/40 border-b border-slate-800">
             <tr>
-              <th className="px-6 py-4 text-slate-600 font-semibold text-sm">Kode Akun</th>
-              <th className="px-6 py-4 text-slate-600 font-semibold text-sm">Nama Akun</th>
-              <th className="px-6 py-4 text-slate-600 font-semibold text-sm">Tipe</th>
+              <th className="px-8 py-6 text-slate-500 uppercase font-black tracking-[0.2em] italic">Access Code</th>
+              <th className="px-8 py-6 text-slate-500 uppercase font-black tracking-[0.2em] italic">Entity Name</th>
+              <th className="px-8 py-6 text-slate-500 uppercase font-black tracking-[0.2em] italic">Classification</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-800">
             {masterData.map((d) => (
-              <tr key={d.id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-6 py-4 text-sky-600 font-mono">{d.code}</td>
-                <td className="px-6 py-4 text-slate-900 font-medium">{d.name}</td>
-                <td className="px-6 py-4">
-                  <span className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] rounded uppercase font-bold tracking-wider">
+              <tr key={d.id} className="hover:bg-slate-800/40 transition-all group">
+                <td className="px-8 py-6 text-brand-blue font-mono font-black italic tracking-widest">{d.code}</td>
+                <td className="px-8 py-6 text-slate-300 font-black uppercase italic tracking-widest">{d.name}</td>
+                <td className="px-8 py-6">
+                  <span className="px-3 py-1.5 bg-slate-950 text-slate-500 text-[9px] rounded-lg uppercase font-black tracking-[0.2em] italic border border-slate-800 shadow-inner">
                     {d.type}
                   </span>
                 </td>

@@ -112,45 +112,45 @@ const RevenueDashboard: React.FC = () => {
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row justify-between items-start gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter">Profit <span className="text-brand-olive">Analysis</span></h1>
-          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1 italic">Real-time Performance Metrics</p>
+          <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">Profit <span className="text-brand-olive">Dynamics</span></h1>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-1 italic">Tactical Fiscal Analysis • Live Margin Tracking</p>
         </div>
-        <div className="flex gap-2 bg-white p-2 rounded-xl border border-brand-brown/10 shadow-sm">
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-brand-cream/20 text-[10px] text-slate-900 px-2 py-1.5 rounded-lg border border-brand-brown/10 focus:outline-none" />
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-brand-cream/20 text-[10px] text-slate-900 px-2 py-1.5 rounded-lg border border-brand-brown/10 focus:outline-none" />
-          <button onClick={() => {setStartDate(''); setEndDate(''); setSelectedDate(null); fetchData();}} className="text-[10px] bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-lg font-bold text-slate-700 transition-colors">Reset</button>
+        <div className="flex gap-2 bg-slate-900/40 p-2.5 rounded-2xl border border-slate-800 backdrop-blur-xl shadow-2xl">
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-slate-950/60 text-[10px] font-black text-white px-3 py-2 rounded-xl border border-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-olive/50 shadow-inner" />
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-slate-950/60 text-[10px] font-black text-white px-3 py-2 rounded-xl border border-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-olive/50 shadow-inner" />
+          <button onClick={() => {setStartDate(''); setEndDate(''); setSelectedDate(null); fetchData();}} className="text-[10px] bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl font-black text-slate-400 hover:text-white transition-all uppercase tracking-widest italic border border-slate-700">Reset</button>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className={`p-8 rounded-[2rem] shadow-xl border-l-8 transition-all ${analytics.netProfit >= 0 ? 'bg-brand-olive/10 border-brand-olive text-brand-olive' : 'bg-brand-peach/10 border-brand-peach text-brand-peach'}`}>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2 italic">Net Profit (Revenue - Cost)</p>
-          <h2 className="text-3xl font-black font-mono tracking-tighter">Rp {analytics.netProfit.toLocaleString()}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className={`p-10 rounded-[3.5rem] shadow-2xl border-l-8 transition-all backdrop-blur-md ${analytics.netProfit >= 0 ? 'bg-brand-olive/5 border-brand-olive text-brand-olive' : 'bg-brand-peach/5 border-brand-peach text-brand-peach'}`}>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-3 italic">Net Yield Surplus</p>
+          <h2 className="text-4xl font-black font-mono tracking-tighter italic">Rp {analytics.netProfit.toLocaleString()}</h2>
         </div>
-        <div className="bg-white border border-brand-brown/10 p-8 rounded-[2rem] border-l-8 border-l-brand-olive shadow-sm">
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2 italic">Total Revenue</p>
-          <h2 className="text-2xl font-black text-slate-900 font-mono tracking-tighter">Rp {analytics.totalRev.toLocaleString()}</h2>
+        <div className="bg-slate-900/60 border border-slate-800 p-10 rounded-[3.5rem] border-l-8 border-l-brand-blue shadow-2xl backdrop-blur-md">
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-3 italic">Gross Revenue Flow</p>
+          <h2 className="text-3xl font-black text-white font-mono tracking-tighter italic">Rp {analytics.totalRev.toLocaleString()}</h2>
         </div>
-        <div className="bg-white border border-brand-brown/10 p-8 rounded-[2rem] border-l-8 border-l-brand-peach shadow-sm">
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2 italic">Total Cost</p>
-          <h2 className="text-2xl font-black text-slate-900 font-mono tracking-tighter">Rp {analytics.totalCost.toLocaleString()}</h2>
+        <div className="bg-slate-900/60 border border-slate-800 p-10 rounded-[3.5rem] border-l-8 border-l-brand-peach shadow-2xl backdrop-blur-md">
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-3 italic">Total Expenditure</p>
+          <h2 className="text-3xl font-black text-white font-mono tracking-tighter italic">Rp {analytics.totalCost.toLocaleString()}</h2>
         </div>
       </div>
 
-      <div className="bg-white border border-brand-brown/10 p-8 rounded-[2.5rem] shadow-sm">
-        <h3 className="text-slate-900 font-bold mb-8 uppercase tracking-widest text-xs flex items-center gap-3">
+      <div className="bg-slate-900/40 border border-slate-800 p-12 rounded-[3.5rem] backdrop-blur-xl shadow-2xl">
+        <h3 className="text-white font-black mb-10 uppercase tracking-[0.3em] text-[10px] flex items-center gap-4 italic opacity-80">
           <Icons.TrendingUp />
-          Revenue Trend Evolution
+          Temporal Revenue Velocity
           {selectedDate && (
             <button 
               onClick={() => setSelectedDate(null)}
-              className="ml-auto text-[10px] bg-brand-olive/10 text-brand-olive px-3 py-1 rounded-full border border-brand-olive/20 hover:bg-brand-olive/20 transition-all"
+              className="ml-auto text-[10px] bg-brand-olive/10 text-brand-olive px-4 py-1.5 rounded-full border border-brand-olive/20 hover:bg-brand-olive/20 transition-all font-black italic tracking-widest"
             >
-              Clear Filter: {formatDisplayDate(selectedDate)} &times;
+              Filter Active: {formatDisplayDate(selectedDate)} &times;
             </button>
           )}
         </h3>
-        <div className="h-[350px]">
+        <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart 
               data={analytics.trend}
@@ -159,66 +159,68 @@ const RevenueDashboard: React.FC = () => {
             >
               <defs>
                 <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8D8741" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#8D8741" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
               <XAxis 
                 dataKey="name" 
-                stroke="#94a3b8" 
+                stroke="#64748b" 
                 fontSize={10} 
                 tickFormatter={(val) => formatDisplayDate(val)} 
                 tickLine={false} 
                 axisLine={false} 
+                fontStyle="italic"
+                fontWeight="bold"
               />
-              <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `Rp${(val/1000).toFixed(0)}k`} />
+              <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `Rp${(val/1000).toFixed(0)}k`} fontStyle="italic" fontWeight="bold" />
               <Tooltip 
                 labelFormatter={(val) => formatDisplayDate(val)}
-                contentStyle={{backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
-                itemStyle={{color: '#8D8741', fontWeight: 'bold'}}
+                contentStyle={{backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', fontSize: '12px', color: '#fff'}}
+                itemStyle={{color: '#10B981', fontWeight: '900', textTransform: 'uppercase'}}
               />
-              <Area type="monotone" dataKey="total" stroke="#8D8741" fill="url(#colorRev)" strokeWidth={3} />
+              <Area type="monotone" dataKey="total" stroke="#10B981" fill="url(#colorRev)" strokeWidth={4} dot={{ r: 4, fill: '#10B981' }} activeDot={{ r: 8, shadow: '0 0 15px #10b981' }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Revenue Table Section */}
-      <div className="bg-white border border-brand-brown/10 rounded-[2.5rem] overflow-hidden shadow-sm animate-in slide-in-from-top-4 duration-500">
-        <div className="p-6 bg-brand-cream/20 border-b border-brand-brown/10 flex justify-between items-center">
-          <h3 className="text-slate-900 font-bold uppercase tracking-widest text-xs italic">
-            Revenue Details
-            {selectedDate && <span className="ml-2 text-brand-olive normal-case font-medium tracking-normal"> (Filtered by {formatDisplayDate(selectedDate)})</span>}
+      <div className="bg-slate-900/60 border border-slate-800 rounded-[3rem] overflow-hidden shadow-2xl animate-in slide-in-from-top-4 duration-500 backdrop-blur-md">
+        <div className="p-8 bg-slate-950/40 border-b border-slate-800 flex justify-between items-center">
+          <h3 className="text-white font-black uppercase tracking-[0.3em] text-[10px] italic">
+            Transactional Database
+            {selectedDate && <span className="ml-3 text-brand-olive lowercase font-black tracking-widest"> [ Period Lock: {formatDisplayDate(selectedDate)} ]</span>}
           </h3>
-          <span className="bg-white px-3 py-1.5 rounded-full text-[10px] text-slate-500 font-black tracking-widest border border-brand-brown/10">
-            {analytics.tableRows.length} RECORDS
+          <span className="bg-slate-800 px-4 py-2 rounded-xl text-[10px] text-slate-400 font-black tracking-[0.2em] border border-slate-700 italic">
+            {analytics.tableRows.length} DATA_POINTS
           </span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-brand-cream/10">
+          <table className="w-full text-left text-[10px]">
+            <thead className="bg-slate-950/40">
               <tr>
-                <th className="p-6 text-slate-500 uppercase font-black tracking-widest">Date</th>
-                <th className="p-6 text-slate-500 uppercase font-black tracking-widest">Parameter</th>
-                <th className="p-6 text-slate-500 uppercase font-black tracking-widest text-right">Revenue</th>
+                <th className="p-6 text-slate-500 uppercase font-black tracking-[0.3em] italic">Timeline</th>
+                <th className="p-6 text-slate-500 uppercase font-black tracking-[0.3em] italic">Origin / Parameter</th>
+                <th className="p-6 text-slate-500 uppercase font-black tracking-[0.3em] italic text-right">Inflow Value</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-brand-brown/5">
+            <tbody className="divide-y divide-slate-800">
               {analytics.tableRows.map((r, i) => (
-                <tr key={i} className="hover:bg-brand-olive/5 transition-colors group">
-                  <td className="p-6 text-slate-500 font-mono tracking-tighter">{formatDisplayDate(r[analytics.DATE_IDX])}</td>
+                <tr key={i} className="hover:bg-slate-800/40 transition-all group">
+                  <td className="p-6 text-slate-400 font-black italic tracking-tighter">{formatDisplayDate(r[analytics.DATE_IDX])}</td>
                   <td className="p-6">
-                    <span className="font-black text-slate-700 uppercase group-hover:text-brand-olive transition-colors tracking-widest">{r[analytics.PARAM_IDX]}</span>
+                    <span className="font-black text-slate-300 uppercase group-hover:text-brand-olive transition-colors tracking-widest italic">{r[analytics.PARAM_IDX]}</span>
                   </td>
-                  <td className="p-6 text-right font-mono font-bold text-brand-olive">
+                  <td className="p-6 text-right font-mono font-black text-brand-olive text-sm italic">
                     Rp {parseIDRCurrency(r[analytics.REV_VAL_IDX]).toLocaleString('id-ID')}
                   </td>
                 </tr>
               ))}
               {analytics.tableRows.length === 0 && (
                 <tr>
-                  <td colSpan={3} className="p-20 text-center text-slate-400 font-bold uppercase italic tracking-[0.3em] opacity-30">No revenue data found.</td>
+                  <td colSpan={3} className="p-24 text-center text-slate-600 font-black uppercase italic tracking-[0.5em] opacity-30">Null Database Response</td>
                 </tr>
               )}
             </tbody>
