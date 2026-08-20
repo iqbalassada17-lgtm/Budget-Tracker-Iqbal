@@ -17,36 +17,37 @@ async function startServer() {
 
   // Gemini API Proxy
   app.post("/api/gemini", async (req, res) => {
-    if (!GEMINI_API_KEY) {
-      return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
-    }
+  if (!GEMINI_API_KEY) {
+    console.error("Gemini Error: GEMINI_API_KEY missing");
+    return res.status(500).json({ error: "GEMINI_API_KEY belum dikonfigurasi di Environment Render." });
+  }
 
-    try {
-      const { model, prompt, config, contents } = req.body;
-      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-      
-      let response;
-      if (contents) {
-        response = await ai.models.generateContent({
-          model: model || "gemini-3-flash-preview",
-          contents: contents,
-          config: config
-        });
-      } else {
-        response = await ai.models.generateContent({
-          model: model || "gemini-3-flash-preview",
-          contents: prompt,
-          config: config
-        });
-      }
-      
-      const text = response.text || "";
-      res.json({ text });
-    } catch (error: any) {
-      console.error("Gemini Error:", error);
-      res.status(500).json({ error: error.message });
-    }
-  });
+  try {
+    const { model, prompt, config, contents } = req.body;
+    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+    
+    // Gunakan model standar gemini-1.5-flash jika tidak ada model yang dikirim
+    const selectedModel = model || "gemini-1.5-flash";
+    const payloadPrompt = contents || prompt || "Berikan ringkasan singkat finansial ini.";
+
+    const response = await ai.models.generateContent({
+      model: selectedModel,
+      contents: payloadPrompt,
+      config: config
+    });
+    
+    const text = response.text || "Tidak ada respon dari AI.";
+    return res.json({ text });
+
+  } catch (error: any) {
+    console.error("Gemini Proxy Error:", error);
+    // Kembalikan JSON aman agar Frontend tidak crash/muncul HTML error
+    return res.status(200).json({ 
+      text: "Sinkronisasi AI belum dapat memproses analisis saat ini. Periksa API Key Gemini Anda.",
+      error: error.message 
+    });
+  }
+});
 
   // Proxy for Google Sheets
   app.all("/api/spreadsheet", async (req, res) => {
