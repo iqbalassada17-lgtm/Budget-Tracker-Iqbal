@@ -2,11 +2,11 @@
 import React from 'react';
 
 export const COLORS = {
-  olive: '#8D8741',
-  blue: '#659DBD',
-  peach: '#DAAD86',
-  brown: '#BC986A',
-  cream: '#F0FDF4',
+  olive: '#10B981',
+  blue: '#3B82F6',
+  peach: '#F59E0B',
+  brown: '#64748B',
+  cream: '#020617',
 };
 
 export const Icons = {

@@ -1,27 +1,52 @@
+
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import fetch from "node-fetch";
+import cors from "cors";
+import { GoogleGenAI } from "@google/genai";
 
 async function startServer() {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
+  const PORT = 3000;
 
-  // 1. Middleware CORS Manual (Menangani izin akses dari Vercel ke Render)
-  app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    
-    // Tangani request Preflight dari browser
-    if (req.method === "OPTIONS") {
-      return res.sendStatus(200);
-    }
-    next();
-  });
-
+  app.use(cors());
   app.use(express.json());
 
-  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_APP_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
+
+  // Gemini API Proxy
+  app.post("/api/gemini", async (req, res) => {
+    if (!GEMINI_API_KEY) {
+      return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
+    }
+
+    try {
+      const { model, prompt, config, contents } = req.body;
+      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+      
+      let response;
+      if (contents) {
+        response = await ai.models.generateContent({
+          model: model || "gemini-3-flash-preview",
+          contents: contents,
+          config: config
+        });
+      } else {
+        response = await ai.models.generateContent({
+          model: model || "gemini-3-flash-preview",
+          contents: prompt,
+          config: config
+        });
+      }
+      
+      const text = response.text || "";
+      res.json({ text });
+    } catch (error: any) {
+      console.error("Gemini Error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   // Proxy for Google Sheets
   app.all("/api/spreadsheet", async (req, res) => {
@@ -43,7 +68,7 @@ async function startServer() {
         redirect: 'follow',
       };
 
-      if (req.method !== 'GET' && req.method !== 'HEAD') {
+      if (req.method === 'POST') {
         options.body = JSON.stringify(req.body);
       }
 
@@ -62,7 +87,7 @@ async function startServer() {
     }
   });
 
-  // Vite middleware for development / Static files for production
+  // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -74,7 +99,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 
