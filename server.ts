@@ -13,7 +13,7 @@ async function startServer() {
   app.use(express.json());
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
+  const SPREADSHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
 
   // Gemini API Proxy
   app.post("/api/gemini", async (req, res) => {
