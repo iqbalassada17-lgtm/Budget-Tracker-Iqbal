@@ -1,4 +1,3 @@
-
 /// <reference types="vite/client" />
 
 export interface SpreadsheetData {
@@ -40,11 +39,10 @@ export interface InvestasiSpreadsheetData {
 }
 
 /**
- * URL PROXY ENDPOINT (Dinamis: Mendukung lokal dev dan production)
+ * URL PROXY ENDPOINT (Dinamis & Hardcoded Fallback ke Render)
  */
-const isDev = import.meta.env.DEV;
-const API_BASE = isDev ? '' : (import.meta.env.VITE_API_URL || '');
-const SPREADSHEET_PROXY_URL = `${API_BASE}/api/spreadsheet`;
+const BACKEND_URL = (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || 'https://budget-tracker-iqbal.onrender.com').replace(/\/$/, '');
+const SPREADSHEET_PROXY_URL = `${BACKEND_URL}/api/spreadsheet`;
 
 // Definisi Tipe Nama Sheet yang diizinkan
 export type SheetName = 'INPUT COST' | 'REVENUE' | 'BUDGET' | 'STOCKBIT' | 'INVESTASI';
