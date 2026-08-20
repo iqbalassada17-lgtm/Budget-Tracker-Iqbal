@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { Icons } from '../constants';
 import { parseAssetCommand } from '../services/geminiService';
-import { syncAssetToGoogleSheet, syncStockbitTransactionToSheet } from '../services/spreadsheetService';
+import { syncStockbitTransactionToSheet } from '../services/spreadsheetService';
 
 const InputAsset: React.FC = () => {
-  const [selectedBroker, setSelectedBroker] = useState<'stockbit' | 'bibit' | null>(null);
+  const [selectedBroker, setSelectedBroker] = useState<'stockbit' | null>(null);
   const [command, setCommand] = useState('');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'analyzing' | 'preview' | 'syncing' | 'success' | 'error'>('idle');
@@ -19,11 +19,11 @@ const InputAsset: React.FC = () => {
     setStatus('analyzing');
     
     try {
-      const brokerName = selectedBroker === 'stockbit' ? 'Stockbit Sekuritas' : 'Bibit Reksadana';
+      const brokerName = 'Stockbit Sekuritas';
       const parsed = await parseAssetCommand(command, brokerName);
       
       // Filter out invalid/zero data before showing preview
-      const validAssets = parsed.filter(a => a.name && (a.lot > 0 || a.amount > 0 || a.buyValue > 0 || a.sellValue > 0));
+      const validAssets = parsed.filter(a => a.name && (a.lot > 0 || a.buyValue > 0 || a.sellValue > 0));
       
       if (validAssets.length === 0) {
         alert("AI tidak mendeteksi data transaksi yang valid. Silakan coba salin ulang teks dari aplikasi broker.");
@@ -46,7 +46,7 @@ const InputAsset: React.FC = () => {
     
     try {
       for (const asset of assets) {
-        if (asset.isTransaction && selectedBroker === 'stockbit') {
+        if (asset.isTransaction) {
           await syncStockbitTransactionToSheet({
             transDate: asset.transDate || '',
             stock: asset.name || '',
@@ -56,16 +56,6 @@ const InputAsset: React.FC = () => {
             buyValue: asset.buyValue || 0,
             sellValue: asset.sellValue || 0,
             salesTax: asset.salesTax || 0
-          });
-        } else {
-          await syncAssetToGoogleSheet({
-            name: asset.name || '',
-            type: asset.isTransaction ? 'STOCK_TRADE' : (asset.type || 'SAHAM'),
-            amount: asset.isTransaction ? ((asset.lot || 0) * 100) : (asset.amount || 0),
-            unit: asset.unit || 'LEMBAR',
-            invest: asset.isTransaction ? (asset.buyValue || 0) : (asset.invest || 0),
-            equity: asset.isTransaction ? (asset.sellValue || 0) : (asset.equity || 0),
-            currentPrice: asset.isTransaction ? (asset.price || 0) : (asset.currentPrice || 0)
           });
         }
       }
@@ -101,7 +91,7 @@ const InputAsset: React.FC = () => {
           
           <div className="space-y-6">
             <h4 className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] text-center italic">Initialize Protocol Source :</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
               <button
                 onClick={() => setSelectedBroker('stockbit')}
                 className={`p-8 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-4 group relative overflow-hidden ${
@@ -118,25 +108,6 @@ const InputAsset: React.FC = () => {
                 <div className="text-center">
                   <p className={`font-black uppercase tracking-widest text-sm italic ${selectedBroker === 'stockbit' ? 'text-white' : 'text-slate-500'}`}>Stockbit Sekuritas</p>
                   <p className="text-[8px] text-slate-600 font-black uppercase tracking-[0.2em] mt-1 italic">Portfolio & Execution Logs</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => setSelectedBroker('bibit')}
-                className={`p-8 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-4 group relative overflow-hidden ${
-                  selectedBroker === 'bibit' 
-                    ? 'bg-brand-blue/10 border-brand-blue shadow-[0_0_50px_rgba(59,130,246,0.15)]' 
-                    : 'bg-slate-950/40 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl transition-all ${
-                  selectedBroker === 'bibit' ? 'bg-brand-blue text-white' : 'bg-slate-900 text-slate-600 group-hover:text-slate-400'
-                }`}>
-                  B
-                </div>
-                <div className="text-center">
-                  <p className={`font-black uppercase tracking-widest text-sm italic ${selectedBroker === 'bibit' ? 'text-white' : 'text-slate-500'}`}>Bibit Reksadana</p>
-                  <p className="text-[8px] text-slate-600 font-black uppercase tracking-[0.2em] mt-1 italic">Asset Allocation Hub</p>
                 </div>
               </button>
             </div>

@@ -13,7 +13,9 @@ const getTodayFormatted = () => {
   return `${d}/${m}/${y}`;
 };
 
-const GEMINI_PROXY_URL = (import.meta.env.VITE_API_URL || '') + '/api/gemini';
+const isDev = import.meta.env.DEV;
+const API_BASE = isDev ? '' : (import.meta.env.VITE_API_URL || '');
+const GEMINI_PROXY_URL = `${API_BASE}/api/gemini`;
 
 const callGeminiProxy = async (payload: any): Promise<string> => {
   try {

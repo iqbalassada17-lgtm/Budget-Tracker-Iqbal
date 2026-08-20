@@ -20,16 +20,6 @@ export interface RevenueSpreadsheetData {
   revenue: number;    
 }
 
-export interface AssetSpreadsheetData {
-  name: string;
-  type: string;
-  amount: number;
-  unit: string;
-  invest: number;
-  equity: number;
-  currentPrice: number;
-}
-
 export interface StockbitTransactionData {
   transDate: string;
   stock: string;
@@ -50,12 +40,14 @@ export interface InvestasiSpreadsheetData {
 }
 
 /**
- * URL PROXY ENDPOINT (Server-side proxy to bypass CORS)
+ * URL PROXY ENDPOINT (Dinamis: Mendukung lokal dev dan production)
  */
-const SPREADSHEET_PROXY_URL = 'https://budget-tracker-iqbal.onrender.com/api/spreadsheet';
+const isDev = import.meta.env.DEV;
+const API_BASE = isDev ? '' : (import.meta.env.VITE_API_URL || '');
+const SPREADSHEET_PROXY_URL = `${API_BASE}/api/spreadsheet`;
 
 // Definisi Tipe Nama Sheet yang diizinkan
-export type SheetName = 'INPUT COST' | 'REVENUE' | 'BUDGET' | 'LIQUID ASSET' | 'FIX ASSET' | 'STOCKBIT' | 'INVESTASI';
+export type SheetName = 'INPUT COST' | 'REVENUE' | 'BUDGET' | 'STOCKBIT' | 'INVESTASI';
 
 /**
  * Fetch data dari Google Sheets (GET)
@@ -66,8 +58,15 @@ export const fetchFromGoogleSheet = async (type: SheetName): Promise<any[][]> =>
   try {
     const response = await fetch(url);
     
+    // Cek apakah responnya OK
     if (!response.ok) {
-      throw new Error(`Proxy Error: ${response.status}`);
+      throw new Error(`Server Error: ${response.status}`);
+    }
+
+    // Cek apakah responnya benar-benar JSON
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Server tidak mengirimkan data JSON yang valid (Kemungkinan Render sedang tidur/sleep). Silakan coba lagi dalam 1 menit.");
     }
     
     const data = await response.json();
@@ -142,35 +141,6 @@ export const syncRevenueToGoogleSheet = async (data: RevenueSpreadsheetData): Pr
     return true;
   } catch (error) {
     console.error("Gagal sync revenue:", error);
-    return false;
-  }
-};
-
-/**
- * Simpan data ASSET (POST)
- */
-export const syncAssetToGoogleSheet = async (data: AssetSpreadsheetData): Promise<boolean> => {
-  try {
-    const payload = {
-      type: 'LIQUID ASSET',
-      name: data.name.toUpperCase(),
-      assetType: data.type.toUpperCase(),
-      amount: data.amount,
-      unit: data.unit.toUpperCase(),
-      invest: data.invest,
-      equity: data.equity,
-      currentPrice: data.currentPrice
-    };
-
-    await fetch(SPREADSHEET_PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    return true;
-  } catch (error) {
-    console.error("Gagal sync asset:", error);
     return false;
   }
 };

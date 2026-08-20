@@ -7,14 +7,13 @@ import { GoogleGenAI } from "@google/genai";
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = 3000;
 
   app.use(cors());
   app.use(express.json());
 
-  // Kredensial Environment Backend (Gunakan process.env)
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_APP_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
+  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
 
   // Gemini API Proxy
   app.post("/api/gemini", async (req, res) => {
@@ -51,16 +50,16 @@ async function startServer() {
 
   // Proxy for Google Sheets
   app.all("/api/spreadsheet", async (req, res) => {
-    try {
-      const url = new URL(SPREADSHEET_WEBAPP_URL);
-      
-      // Copy query params for GET
-      if (req.method === 'GET') {
-        Object.keys(req.query).forEach(key => {
-          url.searchParams.append(key, req.query[key] as string);
-        });
-      }
+    const url = new URL(SPREADSHEET_WEBAPP_URL);
+    
+    // Copy query params for GET
+    if (req.method === 'GET') {
+      Object.keys(req.query).forEach(key => {
+        url.searchParams.append(key, req.query[key] as string);
+      });
+    }
 
+    try {
       const options: any = {
         method: req.method,
         headers: {
@@ -69,7 +68,7 @@ async function startServer() {
         redirect: 'follow',
       };
 
-      if (req.method !== 'GET' && req.method !== 'HEAD') {
+      if (req.method === 'POST') {
         options.body = JSON.stringify(req.body);
       }
 
@@ -99,8 +98,8 @@ async function startServer() {
     app.use(express.static("dist"));
   }
 
-  app.listen(Number(PORT), "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 
