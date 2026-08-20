@@ -52,7 +52,7 @@ export interface InvestasiSpreadsheetData {
 /**
  * URL PROXY ENDPOINT (Server-side proxy to bypass CORS)
  */
-const SPREADSHEET_PROXY_URL = (import.meta.env.VITE_API_URL || '') + '/api/spreadsheet';
+const SPREADSHEET_PROXY_URL = 'https://budget-tracker-iqbal.onrender.com/api/spreadsheet';
 
 // Definisi Tipe Nama Sheet yang diizinkan
 export type SheetName = 'INPUT COST' | 'REVENUE' | 'BUDGET' | 'LIQUID ASSET' | 'FIX ASSET' | 'STOCKBIT' | 'INVESTASI';
