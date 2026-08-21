@@ -28,8 +28,10 @@ async function startServer() {
     const { prompt, contents } = req.body;
     const userPrompt = contents || prompt || "Berikan eksekutif summary keuangan singkat.";
 
-    // Gunakan endpoint REST API v1beta resmi dari Google
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // Gunakan model gemini-2.5-flash
+    const requestedModel = req.body.model || "gemini-2.5-flash";
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${requestedModel}:generateContent?key=${apiKey}`;
+
 
     const geminiResponse = await fetch(geminiUrl, {
       method: "POST",

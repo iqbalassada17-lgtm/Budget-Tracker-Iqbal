@@ -72,7 +72,7 @@ export const parseAssetCommand = async (text: string, brokerName: string): Promi
     `;
 
     const text_res = await callGeminiProxy({ 
-      model: "gemini-1.5-flash", 
+      model: "gemini-2.5-flash", 
       prompt 
     });
     
@@ -86,7 +86,7 @@ export const parseCostCommand = async (text: string): Promise<any> => {
     const today = getTodayFormatted();
     const prompt = `Extract cost details from: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, coa, cost, keterangan. No text around JSON.`;
     const text_res = await callGeminiProxy({ 
-      model: "gemini-1.5-flash", 
+      model: "gemini-2.5-flash", 
       prompt 
     });
     const cleanJson = text_res.replace(/```json|```/gi, '').trim();
@@ -105,7 +105,7 @@ export const parseRevenueCommand = async (text: string): Promise<any> => {
     const today = getTodayFormatted();
     const prompt = `Extract revenue details: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, parameter, revenue. No text around JSON.`;
     const text_res = await callGeminiProxy({ 
-      model: "gemini-1.5-flash", 
+      model: "gemini-2.5-flash", 
       prompt 
     });
     const cleanJson = text_res.replace(/```json|```/gi, '').trim();
@@ -139,14 +139,14 @@ export const getFinancialAdvice = async (summary: any): Promise<string> => {
   `;
   
   return await callGeminiProxy({ 
-    model: "gemini-1.5-flash", 
+    model: "gemini-2.5-flash", 
     prompt 
   });
 };
 
 export const getGrowthStrategy = async (baseline: number): Promise<string> => {
   return await callGeminiProxy({ 
-    model: "gemini-1.5-flash", 
+    model: "gemini-2.5-flash", 
     prompt: `Strategi investasi untuk modal Rp ${baseline}. Bahasa Indonesia.` 
   });
 };
@@ -165,7 +165,7 @@ export const parseInvestasiCommand = async (text: string): Promise<any> => {
       Output JSON with keys: bulan, typeInvest, fundManager, fund (number), ratio (string). No text around JSON.
     `;
     const text_res = await callGeminiProxy({ 
-      model: "gemini-1.5-flash", 
+      model: "gemini-2.5-flash", 
       prompt 
     });
     const cleanJson = text_res.replace(/```json|```/gi, '').trim();
