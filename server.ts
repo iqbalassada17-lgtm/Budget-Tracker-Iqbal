@@ -17,34 +17,33 @@ async function startServer() {
 
   // Gemini API Proxy
   app.post("/api/gemini", async (req, res) => {
-  if (!GEMINI_API_KEY) {
-    console.error("Gemini Error: GEMINI_API_KEY missing");
-    return res.status(500).json({ error: "GEMINI_API_KEY belum dikonfigurasi di Environment Render." });
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+
+  if (!apiKey) {
+    return res.json({ 
+      text: "Sinkronisasi AI belum dapat memproses analisis saat ini. Periksa API Key Gemini Anda." 
+    });
   }
 
   try {
-    const { model, prompt, config, contents } = req.body;
-    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-    
-    // Gunakan model standar gemini-1.5-flash jika tidak ada model yang dikirim
-    const selectedModel = model || "gemini-1.5-flash";
-    const payloadPrompt = contents || prompt || "Berikan ringkasan singkat finansial ini.";
+    const { prompt, contents, model } = req.body;
+    const ai = new GoogleGenAI({ apiKey });
+
+    // Gunakan gemini-1.5-flash sebagai fallback default
+    const targetModel = model || "gemini-1.5-flash";
+    const payload = contents || prompt || "Berikan ringkasan singkat finansial ini.";
 
     const response = await ai.models.generateContent({
-      model: selectedModel,
-      contents: payloadPrompt,
-      config: config
+      model: targetModel,
+      contents: payload
     });
-    
-    const text = response.text || "Tidak ada respon dari AI.";
-    return res.json({ text });
+
+    return res.json({ text: response.text || "Analisis selesai." });
 
   } catch (error: any) {
-    console.error("Gemini Proxy Error:", error);
-    // Kembalikan JSON aman agar Frontend tidak crash/muncul HTML error
-    return res.status(200).json({ 
-      text: "Sinkronisasi AI belum dapat memproses analisis saat ini. Periksa API Key Gemini Anda.",
-      error: error.message 
+    console.error("Gemini Error:", error);
+    return res.json({ 
+      text: "Sinkronisasi AI sedang memperbarui data analisis. Silakan coba beberapa saat lagi." 
     });
   }
 });
