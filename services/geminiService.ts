@@ -13,9 +13,9 @@ const getTodayFormatted = () => {
   return `${d}/${m}/${y}`;
 };
 
-const isDev = import.meta.env.DEV;
-const API_BASE = isDev ? '' : (import.meta.env.VITE_API_URL || '');
-const GEMINI_PROXY_URL = `${API_BASE}/api/gemini`;
+// 1. HARDCODE FALLBACK langsung ke Render agar tidak 404 di Vercel
+const BACKEND_URL = (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || 'https://budget-tracker-iqbal.onrender.com').replace(/\/$/, '');
+const GEMINI_PROXY_URL = `${BACKEND_URL}/api/gemini`;
 
 const callGeminiProxy = async (payload: any): Promise<string> => {
   try {
@@ -25,20 +25,28 @@ const callGeminiProxy = async (payload: any): Promise<string> => {
       body: JSON.stringify(payload),
     });
     
+    // Cek Content-Type untuk mencegah crash Unexpected Token 'T' jika server ngirim HTML
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      console.warn("Gemini Proxy mengembalikan respon non-JSON. Menggunakan teks fallback.");
+      return "SITHIS AI Online. Menunggu sinkronisasi data.";
+    }
+
     if (!response.ok) {
       const err = await response.json();
       throw new Error(err.error || 'Gemini Proxy Error');
     }
     
     const data = await response.json();
-    return data.text;
+    return data.text || "Respon AI kosong.";
   } catch (error) {
     console.error("Gemini Proxy Error:", error);
-    throw error;
+    // Kembalikan teks aman agar UI tidak crash saat gagal
+    return "SITHIS AI sedang memperbarui data analisis. Silakan coba beberapa saat lagi.";
   }
 };
 
-const callWithRetry = async (fn: () => Promise<any>, retries = 3, delay = 1000): Promise<any> => {
+const callWithRetry = async (fn: () => Promise<any>, retries = 2, delay = 1000): Promise<any> => {
   try {
     return await fn();
   } catch (error: any) {
@@ -64,11 +72,10 @@ export const parseAssetCommand = async (text: string, brokerName: string): Promi
     `;
 
     const text_res = await callGeminiProxy({ 
-      model: "gemini-3-pro-preview", 
+      model: "gemini-1.5-flash", 
       prompt 
     });
     
-    // Clean potential markdown code blocks
     const cleanJson = text_res.replace(/```json|```/gi, '').trim();
     return JSON.parse(cleanJson);
   });
@@ -79,7 +86,7 @@ export const parseCostCommand = async (text: string): Promise<any> => {
     const today = getTodayFormatted();
     const prompt = `Extract cost details from: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, coa, cost, keterangan. No text around JSON.`;
     const text_res = await callGeminiProxy({ 
-      model: "gemini-3-flash-preview", 
+      model: "gemini-1.5-flash", 
       prompt 
     });
     const cleanJson = text_res.replace(/```json|```/gi, '').trim();
@@ -98,7 +105,7 @@ export const parseRevenueCommand = async (text: string): Promise<any> => {
     const today = getTodayFormatted();
     const prompt = `Extract revenue details: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, parameter, revenue. No text around JSON.`;
     const text_res = await callGeminiProxy({ 
-      model: "gemini-3-flash-preview", 
+      model: "gemini-1.5-flash", 
       prompt 
     });
     const cleanJson = text_res.replace(/```json|```/gi, '').trim();
@@ -115,9 +122,9 @@ export const parseRevenueCommand = async (text: string): Promise<any> => {
 export const getFinancialAdvice = async (summary: any): Promise<string> => {
   const prompt = `
     DASHBOARD CONTEXT:
-    - Total Revenue: Rp ${summary.income.toLocaleString()}
-    - Total Expenses: Rp ${summary.expenses.toLocaleString()}
-    - Current Balance: Rp ${summary.balance.toLocaleString()}
+    - Total Revenue: Rp ${(summary?.income || 0).toLocaleString()}
+    - Total Expenses: Rp ${(summary?.expenses || 0).toLocaleString()}
+    - Current Balance: Rp ${(summary?.balance || 0).toLocaleString()}
     
     TASK:
     Beri 3 saran keuangan singkat, taktis, dan personal untuk Iqbal berdasarkan data di atas.
@@ -132,14 +139,14 @@ export const getFinancialAdvice = async (summary: any): Promise<string> => {
   `;
   
   return await callGeminiProxy({ 
-    model: "gemini-3-flash-preview", 
+    model: "gemini-1.5-flash", 
     prompt 
   });
 };
 
 export const getGrowthStrategy = async (baseline: number): Promise<string> => {
   return await callGeminiProxy({ 
-    model: "gemini-3-flash-preview", 
+    model: "gemini-1.5-flash", 
     prompt: `Strategi investasi untuk modal Rp ${baseline}. Bahasa Indonesia.` 
   });
 };
@@ -158,7 +165,7 @@ export const parseInvestasiCommand = async (text: string): Promise<any> => {
       Output JSON with keys: bulan, typeInvest, fundManager, fund (number), ratio (string). No text around JSON.
     `;
     const text_res = await callGeminiProxy({ 
-      model: "gemini-3-flash-preview", 
+      model: "gemini-1.5-flash", 
       prompt 
     });
     const cleanJson = text_res.replace(/```json|```/gi, '').trim();
