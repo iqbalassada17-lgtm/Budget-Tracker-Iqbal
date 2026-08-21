@@ -17,34 +17,47 @@ async function startServer() {
 
   // Gemini API Proxy
   app.post("/api/gemini", async (req, res) => {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-
-  if (!apiKey) {
-    return res.json({ 
-      text: "Sinkronisasi AI belum dapat memproses analisis saat ini. Periksa API Key Gemini Anda." 
-    });
-  }
-
   try {
-    const { prompt, contents, model } = req.body;
-    const ai = new GoogleGenAI({ apiKey });
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
 
-    // Gunakan gemini-1.5-flash sebagai fallback default
-    const targetModel = model || "gemini-1.5-flash";
-    const payload = contents || prompt || "Berikan ringkasan singkat finansial ini.";
+    if (!apiKey) {
+      console.error("Gemini Error: API Key missing in environment");
+      return res.json({ text: "API Key Gemini belum terpasang di Environment Render." });
+    }
 
-    const response = await ai.models.generateContent({
-      model: targetModel,
-      contents: payload
+    const { prompt, contents } = req.body;
+    const userPrompt = contents || prompt || "Berikan eksekutif summary keuangan singkat.";
+
+    // Gunakan endpoint REST API v1beta resmi dari Google
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    const geminiResponse = await fetch(geminiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: typeof userPrompt === "string" ? userPrompt : JSON.stringify(userPrompt) }]
+          }
+        ]
+      })
     });
 
-    return res.json({ text: response.text || "Analisis selesai." });
+    const result: any = await geminiResponse.json();
+
+    if (result.error) {
+      console.error("Google AI API Error Detail:", result.error);
+      return res.json({ 
+        text: `Gagal memproses AI: ${result.error.message || "Periksa API Key Gemini Anda."}` 
+      });
+    }
+
+    const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+    return res.json({ text: aiText || "Analisis selesai, namun tidak ada respons teks." });
 
   } catch (error: any) {
-    console.error("Gemini Error:", error);
-    return res.json({ 
-      text: "Sinkronisasi AI sedang memperbarui data analisis. Silakan coba beberapa saat lagi." 
-    });
+    console.error("Gemini Endpoint Error:", error);
+    return res.json({ text: "Gagal menghubungkan ke layanan Google AI." });
   }
 });
 
