@@ -1,5 +1,6 @@
 
 import express from "express";
+import path from "path";
 import { createServer as createViteServer } from "vite";
 import fetch from "node-fetch";
 import cors from "cors";
@@ -13,55 +14,46 @@ async function startServer() {
   app.use(express.json());
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  const SPREADSHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
+  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
 
   // Gemini API Proxy
   app.post("/api/gemini", async (req, res) => {
-  try {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-
-    if (!apiKey) {
-      console.error("Gemini Error: API Key missing in environment");
-      return res.json({ text: "API Key Gemini belum terpasang di Environment Render." });
+    if (!GEMINI_API_KEY) {
+      console.error("GEMINI_API_KEY is missing in environment variables.");
+      return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
     }
 
-    const { prompt, contents } = req.body;
-    const userPrompt = contents || prompt || "Berikan eksekutif summary keuangan singkat.";
-
-    // Gunakan model gemini-2.5-flash
-    const requestedModel = req.body.model || "gemini-2.5-flash";
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${requestedModel}:generateContent?key=${apiKey}`;
-
-
-    const geminiResponse = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [{ text: typeof userPrompt === "string" ? userPrompt : JSON.stringify(userPrompt) }]
-          }
-        ]
-      })
-    });
-
-    const result: any = await geminiResponse.json();
-
-    if (result.error) {
-      console.error("Google AI API Error Detail:", result.error);
-      return res.json({ 
-        text: `Gagal memproses AI: ${result.error.message || "Periksa API Key Gemini Anda."}` 
-      });
+    try {
+      const { model, prompt, config, contents } = req.body;
+      const genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+      
+      // Use the provided model or fallback to gemini-3-flash-preview
+      const modelName = model || "gemini-3-flash-preview";
+      
+      let response;
+      if (contents) {
+        // If structured contents are provided (for multi-turn or complex prompts)
+        response = await genAI.models.generateContent({
+          model: modelName,
+          contents: contents,
+          config: config
+        });
+      } else {
+        // Standard single prompt
+        response = await genAI.models.generateContent({
+          model: modelName,
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          config: config
+        });
+      }
+      
+      const text = response.text || "";
+      res.json({ text });
+    } catch (error: any) {
+      console.error("Gemini Proxy Error:", error.message);
+      res.status(500).json({ error: error.message || "Failed to generate AI response" });
     }
-
-    const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-    return res.json({ text: aiText || "Analisis selesai, namun tidak ada respons teks." });
-
-  } catch (error: any) {
-    console.error("Gemini Endpoint Error:", error);
-    return res.json({ text: "Gagal menghubungkan ke layanan Google AI." });
-  }
-});
+  });
 
   // Proxy for Google Sheets
   app.all("/api/spreadsheet", async (req, res) => {
@@ -110,7 +102,11 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static("dist"));
+    const distPath = path.join(process.cwd(), 'dist');
+    app.use(express.static(distPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
   }
 
   app.listen(PORT, "0.0.0.0", () => {

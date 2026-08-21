@@ -66,7 +66,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onLogout }) => {
       };
       
       setSummary(newSummary);
-      const advice = await getFinancialAdvice(newSummary);
+      const advice = await getFinancialAdvice(newSummary, costData ? costData.slice(1) : []);
       setAiAdvice(advice);
     } catch (err: any) {
       console.error("Dashboard Sync Error:", err);
