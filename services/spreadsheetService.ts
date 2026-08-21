@@ -44,7 +44,7 @@ export interface InvestasiSpreadsheetData {
  */
 const isDev = import.meta.env.DEV;
 const API_BASE = isDev ? '' : (import.meta.env.VITE_API_URL || '');
-const SPREADSHEET_PROXY_URL = `${API_BASE}/api/spreadsheet`;
+const SPREADSHEET_PROXY_URL = 'https://budget-tracker-iqbal.onrender.com/api/spreadsheet';
 
 // Definisi Tipe Nama Sheet yang diizinkan
 export type SheetName = 'INPUT COST' | 'REVENUE' | 'BUDGET' | 'STOCKBIT' | 'INVESTASI';
