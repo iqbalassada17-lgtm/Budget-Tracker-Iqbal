@@ -16,11 +16,11 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL;
+  const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL || process.env.SPREADSHEET_APP_SCRIPT_URL;
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
   if (!SPREADSHEET_WEBAPP_URL) {
-    console.error("CRITICAL: SPREADSHEET_WEBAPP_URL is not set in Environment Variables!");
+    console.error("CRITICAL: Neither SPREADSHEET_WEBAPP_URL nor SPREADSHEET_APP_SCRIPT_URL is set in Environment Variables!");
   }
   if (!GEMINI_API_KEY) {
     console.warn("WARNING: GEMINI_API_KEY is not set. AI features will be disabled.");
@@ -122,7 +122,7 @@ async function startServer() {
   function serveStatic(expressApp: any) {
     const distPath = path.join(process.cwd(), 'dist');
     expressApp.use(express.static(distPath));
-    expressApp.get('*', (req: any, res: any) => {
+    expressApp.get('*all', (req: any, res: any) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
