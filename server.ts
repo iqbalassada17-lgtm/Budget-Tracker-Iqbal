@@ -8,7 +8,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   app.use(cors());
   app.use(express.json());
@@ -16,7 +16,7 @@ async function startServer() {
   const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-  // Initialize Gemini
+  // Initialize Gemini correctly for @google/genai
   const ai = GEMINI_API_KEY ? new GoogleGenAI({
     apiKey: GEMINI_API_KEY,
     httpOptions: {
@@ -79,12 +79,14 @@ async function startServer() {
         generationConfig.thinkingConfig = { thinkingBudget };
       }
 
+      // In @google/genai, we use ai.models.generateContent directly
       const result = await ai.models.generateContent({
         model: model || "gemini-3.8-flash",
         contents: prompt,
         config: generationConfig
       });
 
+      // .text is a property in this SDK
       res.json({ text: result.text });
     } catch (error: any) {
       console.error("Gemini Error:", error);
@@ -107,7 +109,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  app.listen(Number(PORT), "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
   });
 }
