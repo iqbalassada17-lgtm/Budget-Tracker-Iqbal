@@ -2,14 +2,15 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import fetch from "node-fetch";
 import { GoogleGenAI } from "@google/genai";
 
 async function startServer() {
   const app = express();
   const PORT = process.env.PORT || 3000;
 
-  console.log(`Starting server on port ${PORT}...`);
+  console.log(`--- Server Initialization ---`);
+  console.log(`Port: ${PORT}`);
+  console.log(`Node Version: ${process.version}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 
   app.use(cors());
@@ -19,35 +20,35 @@ async function startServer() {
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
   if (!SPREADSHEET_WEBAPP_URL) {
-    console.warn("WARNING: SPREADSHEET_WEBAPP_URL is not set!");
+    console.error("CRITICAL: SPREADSHEET_WEBAPP_URL is not set in Environment Variables!");
   }
   if (!GEMINI_API_KEY) {
-    console.warn("WARNING: GEMINI_API_KEY is not set!");
+    console.warn("WARNING: GEMINI_API_KEY is not set. AI features will be disabled.");
   }
 
   const SPREADSHEET_URL = SPREADSHEET_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
 
-  // Initialize Gemini correctly for @google/genai
+  // Health Check Endpoint (Penting untuk Render)
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", environment: process.env.NODE_ENV });
+  });
+
+  // Initialize Gemini
   const ai = GEMINI_API_KEY ? new GoogleGenAI({
     apiKey: GEMINI_API_KEY,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      }
-    }
+    httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
   }) : null;
 
-  // Proxy for Google Sheets
+  // Proxy for Google Sheets (Menggunakan native fetch)
   app.all("/api/spreadsheet", async (req, res) => {
-    const url = new URL(SPREADSHEET_URL);
-    
-    if (req.method === 'GET') {
-      Object.keys(req.query).forEach(key => {
-        url.searchParams.append(key, req.query[key] as string);
-      });
-    }
-
     try {
+      const url = new URL(SPREADSHEET_URL);
+      if (req.method === 'GET') {
+        Object.keys(req.query).forEach(key => {
+          url.searchParams.append(key, req.query[key] as string);
+        });
+      }
+
       const options: any = {
         method: req.method,
         headers: { 'Content-Type': 'application/json' },
@@ -67,16 +68,14 @@ async function startServer() {
         res.send(data);
       }
     } catch (error: any) {
-      console.error("Proxy Error:", error);
+      console.error("Spreadsheet Proxy Error:", error);
       res.status(500).json({ error: error.message });
     }
   });
 
-  // Gemini Endpoints
+  // Gemini API
   app.post("/api/gemini/generate", async (req, res) => {
-    if (!ai) {
-      return res.status(500).json({ error: "Gemini API Key not configured" });
-    }
+    if (!ai) return res.status(500).json({ error: "Gemini API Key not configured" });
 
     const { model, prompt, schema, thinkingBudget } = req.body;
 
@@ -103,9 +102,8 @@ async function startServer() {
     }
   });
 
-  // Vite middleware for development
+  // Vite / Static Files
   if (process.env.NODE_ENV !== "production") {
-    console.log("Loading Vite middleware for development...");
     try {
       const { createServer: createViteServer } = await import("vite");
       const vite = await createViteServer({
@@ -114,21 +112,28 @@ async function startServer() {
       });
       app.use(vite.middlewares);
     } catch (e) {
-      console.error("Failed to load Vite. Make sure it is installed in devDependencies.");
-      console.error(e);
+      console.log("Running in development but Vite not found. Serving static files instead.");
+      serveStatic(app);
     }
   } else {
-    console.log("Serving static files from dist/ in production mode...");
+    serveStatic(app);
+  }
+
+  function serveStatic(expressApp: any) {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
+    expressApp.use(express.static(distPath));
+    expressApp.get('*', (req: any, res: any) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
 
   app.listen(Number(PORT), "0.0.0.0", () => {
-    console.log(`Server is LIVE on port ${PORT}`);
+    console.log(`--- Server is LIVE ---`);
+    console.log(`Listening on 0.0.0.0:${PORT}`);
   });
 }
 
-startServer();
+startServer().catch(err => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});

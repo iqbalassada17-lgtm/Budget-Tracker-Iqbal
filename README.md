@@ -2,29 +2,29 @@
 
 Aplikasi ini telah dirapikan untuk mendukung deployment terpisah antara Frontend dan Backend.
 
+## 🚀 Persiapan Deployment di Render (BACKEND)
+
+Sangat penting mengikuti langkah ini agar server tidak mati (*Exited with status 1*):
+
+### 1. Konfigurasi Dashboard Render
+- **Build Command**: `npm install && npm run build`
+- **Start Command**: `npm start`  <-- **PENTING: JANGAN gunakan `npx ts-node` atau `npm run dev`**
+- **Environment Variables** (Menu *Environment*):
+  - `NODE_ENV`: `production`
+  - `GEMINI_API_KEY`: API Key Anda (dari Google AI Studio).
+  - `SPREADSHEET_WEBAPP_URL`: URL Google Apps Script Anda (WAJIB diisi agar database terhubung).
+
+### 2. Konfigurasi di Vercel (FRONTEND)
+- **Environment Variables**:
+  - `VITE_API_URL`: URL backend Anda di Render (Contoh: `https://laporan-backend.onrender.com`).
+
+---
+
 ## Arsitektur
 - **Frontend**: React + Vite (Direkomendasikan ke **Vercel**).
 - **Backend**: Express.js (Direkomendasikan ke **Render**).
 - **Database**: Google Sheets (Data tersimpan aman di Google Spreadsheet Anda).
 - **Repo**: Kode siap di-push ke **GitHub**.
-
-## Persiapan Deployment
-
-### 1. Backend (Render)
-- Buat Web Service baru di Render.
-- Hubungkan dengan repositori GitHub Anda.
-- **Build Command**: `npm install && npm run build`
-- **Start Command**: `npm start`
-- **Environment Variables**:
-  - `GEMINI_API_KEY`: API Key dari AI Studio.
-  - `SPREADSHEET_WEBAPP_URL`: URL dari Google Apps Script Anda.
-
-### 2. Frontend (Vercel)
-- Buat Project baru di Vercel.
-- Hubungkan dengan repositori yang sama.
-- **Framework Preset**: Vite.
-- **Environment Variables**:
-  - `VITE_API_URL`: URL aplikasi Backend Anda di Render (contoh: `https://laporan-backend.onrender.com`).
 
 ## Keamanan
 - API Key Gemini sekarang tersimpan aman di Backend (Server-side).
