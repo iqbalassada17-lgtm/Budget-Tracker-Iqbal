@@ -1,6 +1,3 @@
-/// <reference types="vite/client" />
-
-import { Type } from "@google/genai";
 
 const INDO_MONTHS = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
 const INDO_DAYS = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
@@ -13,43 +10,36 @@ const getTodayFormatted = () => {
   return `${d}/${m}/${y}`;
 };
 
-const isDev = import.meta.env.DEV;
-const API_BASE = isDev ? '' : (import.meta.env.VITE_API_URL || '');
-const GEMINI_PROXY_URL = `${API_BASE}/api/gemini`;
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const GEMINI_ENDPOINT = `${API_BASE_URL}/api/gemini/generate`;
 
-const callGeminiProxy = async (payload: any): Promise<string> => {
-  try {
-    const response = await fetch(GEMINI_PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Gemini Proxy Error');
-    }
-    
-    const data = await response.json();
-    return data.text;
-  } catch (error) {
-    console.error("Gemini Proxy Error:", error);
-    throw error;
+const callBackendGemini = async (prompt: string, model?: string, schema?: any, thinkingBudget?: number) => {
+  const response = await fetch(GEMINI_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, model, schema, thinkingBudget }),
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Backend Gemini Error: ${response.status}`);
   }
+  
+  const result = await response.json();
+  return result.text;
 };
 
-const callWithRetry = async (fn: () => Promise<any>, retries = 3, delay = 1000): Promise<any> => {
+const callGeminiWithRetry = async (fn: () => Promise<any>, retries = 3, delay = 1000): Promise<any> => {
   try {
     return await fn();
   } catch (error: any) {
     if (retries <= 0) throw error;
     await new Promise(resolve => setTimeout(resolve, delay));
-    return callWithRetry(fn, retries - 1, delay * 2);
+    return callGeminiWithRetry(fn, retries - 1, delay * 2);
   }
 };
 
 export const parseAssetCommand = async (text: string, brokerName: string): Promise<any[]> => {
-  return callWithRetry(async () => {
+  return callGeminiWithRetry(async () => {
     const prompt = `
       EXTRACT TRANSACTIONS FROM ${brokerName}: "${text}"
       
@@ -63,100 +53,94 @@ export const parseAssetCommand = async (text: string, brokerName: string): Promi
       7. Output: Pure JSON array. No conversational text.
     `;
 
-    const text_res = await callGeminiProxy({ 
-      model: "gemini-3-pro-preview", 
-      prompt 
-    });
-    
-    // Clean potential markdown code blocks
-    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
-    return JSON.parse(cleanJson);
+    const schema = {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          isTransaction: { type: 'boolean' },
+          transDate: { type: 'string' },
+          side: { type: 'string' },
+          lot: { type: 'number' },
+          price: { type: 'number' },
+          buyValue: { type: 'number' },
+          sellValue: { type: 'number' },
+          salesTax: { type: 'number' },
+          name: { type: 'string' }
+        },
+        required: ["name", "lot", "price", "side"]
+      }
+    };
+
+    const textResponse = await callBackendGemini(prompt, "gemini-1.5-pro", schema, 2000);
+    return textResponse ? JSON.parse(textResponse) : [];
   });
 };
 
 export const parseCostCommand = async (text: string): Promise<any> => {
-  return callWithRetry(async () => {
+  return callGeminiWithRetry(async () => {
     const today = getTodayFormatted();
-    const prompt = `Extract cost details from: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, coa, cost, keterangan. No text around JSON.`;
-    const text_res = await callGeminiProxy({ 
-      model: "gemini-3-flash-preview", 
-      prompt 
-    });
-    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
-    const data = JSON.parse(cleanJson);
-    const parts = (data.tanggal || today).split('/');
-    const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    data.bulan = INDO_MONTHS[dateObj.getMonth()];
-    data.hari = INDO_DAYS[dateObj.getDay()];
-    data.week = Math.ceil(dateObj.getDate() / 7);
-    return data;
+    const prompt = `Extract cost details from: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON.`;
+    const textResponse = await callBackendGemini(prompt, "gemini-1.5-flash", { type: 'object' });
+    if (textResponse) {
+      const data = JSON.parse(textResponse);
+      const parts = (data.tanggal || today).split('/');
+      const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+      data.bulan = INDO_MONTHS[dateObj.getMonth()];
+      data.hari = INDO_DAYS[dateObj.getDay()];
+      data.week = Math.ceil(dateObj.getDate() / 7);
+      return data;
+    }
   });
 };
 
 export const parseRevenueCommand = async (text: string): Promise<any> => {
-  return callWithRetry(async () => {
+  return callGeminiWithRetry(async () => {
     const today = getTodayFormatted();
-    const prompt = `Extract revenue details: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON with keys: tanggal, parameter, revenue. No text around JSON.`;
-    const text_res = await callGeminiProxy({ 
-      model: "gemini-3-flash-preview", 
-      prompt 
-    });
-    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
-    const data = JSON.parse(cleanJson);
-    const parts = (data.tanggal || today).split('/');
-    const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    data.bulan = INDO_MONTHS[dateObj.getMonth()];
-    data.hari = INDO_DAYS[dateObj.getDay()];
-    data.week = "WEEK" + Math.ceil(dateObj.getDate() / 7);
-    return data;
+    const prompt = `Extract revenue details: "${text}". Use DD/MM/YYYY. Date default: ${today}. Output JSON.`;
+    const textResponse = await callBackendGemini(prompt, "gemini-1.5-flash", { type: 'object' });
+    if (textResponse) {
+      const data = JSON.parse(textResponse);
+      const parts = (data.tanggal || today).split('/');
+      const dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+      data.bulan = INDO_MONTHS[dateObj.getMonth()];
+      data.hari = INDO_DAYS[dateObj.getDay()];
+      data.week = "WEEK" + Math.ceil(dateObj.getDate() / 7);
+      return data;
+    }
   });
 };
 
-export const getFinancialAdvice = async (summary: any, recentCosts: any[] = []): Promise<string> => {
-  // Format recent costs for context
-  const costContext = recentCosts.length > 0 
-    ? recentCosts.slice(0, 10).map(c => `- ${c[2] || 'Cost'}: Rp ${c[5] || 0} (${c[6] || ''})`).join('\n')
-    : "Data rincian biaya tidak tersedia.";
-
+export const getFinancialAdvice = async (summary: any): Promise<string> => {
   const prompt = `
-    IDENTITAS PENGGUNA: Iqbal (Portfolio Executive)
+    DASHBOARD CONTEXT:
+    - Total Revenue: Rp ${summary.income.toLocaleString()}
+    - Total Expenses: Rp ${summary.expenses.toLocaleString()}
+    - Current Balance: Rp ${summary.balance.toLocaleString()}
     
-    KONTEKS RINGKASAN:
-    - Total Revenue (Pemasukan): Rp ${summary.income.toLocaleString()}
-    - Total Expenses (Biaya): Rp ${summary.expenses.toLocaleString()}
-    - Saldo Saat Ini: Rp ${summary.balance.toLocaleString()}
+    TASK:
+    Beri 3 saran keuangan singkat, taktis, dan personal untuk Iqbal berdasarkan data di atas.
     
-    RINCIAN BIAYA TERAKHIR:
-    ${costContext}
-    
-    TUGAS:
-    Sebagai asisten AI finansial personal, berikan tepat 3 saran keuangan yang sangat taktis, tajam, dan personal untuk Iqbal berdasarkan rincian data di atas.
-    
-    ATURAN FORMAT:
-    1. Gunakan Bahasa Indonesia yang profesional, modern, dan maskulin (to the point).
-    2. Berikan tepat 3 poin saran (tanpa nomor di awal, sistem akan mengatur bullet).
-    3. Gunakan **bolding** (tanda **) untuk angka, persentase, atau kata kunci strategis.
-    4. Analisis rincian biaya (cost category) jika ada pola pemborosan.
-    5. Fokus pada: efisiensi biaya (cost control), optimasi pundi pendapatan (revenue stream), dan alokasi dana cadangan.
-    6. Setiap poin harus berisi alasan logis berdasarkan data tersebut.
-    7. Jangan bertele-tele. Langsung pada solusi.
+    FORMAT:
+    - Gunakan Bahasa Indonesia yang profesional namun modern (masculine tone).
+    - Berikan tepat 3 poin saran.
+    - Gunakan **bolding** (dengan tanda **) untuk kata kunci atau angka penting.
+    - Jangan gunakan karakter bullet (*) di awal kalimat, biarkan sistem yang menangani.
+    - Fokus pada optimasi revenue atau kontrol budget.
+    - Jangan terlalu panjang.
   `;
   
-  return await callGeminiProxy({ 
-    model: "gemini-3-flash-preview", 
-    prompt 
-  });
+  const textResponse = await callBackendGemini(prompt, "gemini-1.5-flash");
+  return textResponse || "Terus pantau keuanganmu.";
 };
 
 export const getGrowthStrategy = async (baseline: number): Promise<string> => {
-  return await callGeminiProxy({ 
-    model: "gemini-3-flash-preview", 
-    prompt: `Strategi investasi untuk modal Rp ${baseline}. Bahasa Indonesia.` 
-  });
+  const textResponse = await callBackendGemini(`Strategi investasi untuk modal Rp ${baseline}. Bahasa Indonesia.`, "gemini-1.5-flash");
+  return textResponse || "Investasi rutin adalah kunci.";
 };
 
 export const parseInvestasiCommand = async (text: string): Promise<any> => {
-  return callWithRetry(async () => {
+  return callGeminiWithRetry(async () => {
     const prompt = `
       Extract investment details from: "${text}"
       Template format:
@@ -166,13 +150,9 @@ export const parseInvestasiCommand = async (text: string): Promise<any> => {
       FUND : [AMOUNT]
       RATIO : [PERCENTAGE]
       
-      Output JSON with keys: bulan, typeInvest, fundManager, fund (number), ratio (string). No text around JSON.
+      Output JSON with keys: bulan, typeInvest, fundManager, fund (number), ratio (string).
     `;
-    const text_res = await callGeminiProxy({ 
-      model: "gemini-3-flash-preview", 
-      prompt 
-    });
-    const cleanJson = text_res.replace(/```json|```/gi, '').trim();
-    return JSON.parse(cleanJson);
+    const textResponse = await callBackendGemini(prompt, "gemini-1.5-flash", { type: 'object' });
+    return textResponse ? JSON.parse(textResponse) : null;
   });
 };

@@ -1,20 +1,31 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Laporan Keuangan Iqbal - Panduan Deployment
 
-# Run and deploy your AI Studio app
+Aplikasi ini telah dirapikan untuk mendukung deployment terpisah antara Frontend dan Backend.
 
-This contains everything you need to run your app locally.
+## Arsitektur
+- **Frontend**: React + Vite (Direkomendasikan ke **Vercel**).
+- **Backend**: Express.js (Direkomendasikan ke **Render**).
+- **Database**: Google Sheets (Data tersimpan aman di Google Spreadsheet Anda).
+- **Repo**: Kode siap di-push ke **GitHub**.
 
-View your app in AI Studio: https://ai.studio/apps/8da1ec9b-d84d-4ab7-9456-3f12fde3a088
+## Persiapan Deployment
 
-## Run Locally
+### 1. Backend (Render)
+- Buat Web Service baru di Render.
+- Hubungkan dengan repositori GitHub Anda.
+- **Build Command**: `npm install && npm run build`
+- **Start Command**: `npm start`
+- **Environment Variables**:
+  - `GEMINI_API_KEY`: API Key dari AI Studio.
+  - `SPREADSHEET_WEBAPP_URL`: URL dari Google Apps Script Anda.
 
-**Prerequisites:**  Node.js
+### 2. Frontend (Vercel)
+- Buat Project baru di Vercel.
+- Hubungkan dengan repositori yang sama.
+- **Framework Preset**: Vite.
+- **Environment Variables**:
+  - `VITE_API_URL`: URL aplikasi Backend Anda di Render (contoh: `https://laporan-backend.onrender.com`).
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Keamanan
+- API Key Gemini sekarang tersimpan aman di Backend (Server-side).
+- Proxy Google Sheets juga melalui Backend untuk menghindari isu CORS.

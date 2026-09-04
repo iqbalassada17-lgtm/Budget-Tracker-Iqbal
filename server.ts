@@ -1,10 +1,10 @@
 
 import express from "express";
+import cors from "cors";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import fetch from "node-fetch";
-import cors from "cors";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 
 async function startServer() {
   const app = express();
@@ -13,53 +13,23 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
   const SPREADSHEET_WEBAPP_URL = process.env.SPREADSHEET_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwK-glXxXsOTMt7Ht4govyHypu7c5CN2kGeQlpnx0hZ9dW0byBWoYrhtlAId5S2fEIeTA/exec';
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-  // Gemini API Proxy
-  app.post("/api/gemini", async (req, res) => {
-    if (!GEMINI_API_KEY) {
-      console.error("GEMINI_API_KEY is missing in environment variables.");
-      return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
-    }
-
-    try {
-      const { model, prompt, config, contents } = req.body;
-      const genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-      
-      // Use the provided model or fallback to gemini-3-flash-preview
-      const modelName = model || "gemini-3-flash-preview";
-      
-      let response;
-      if (contents) {
-        // If structured contents are provided (for multi-turn or complex prompts)
-        response = await genAI.models.generateContent({
-          model: modelName,
-          contents: contents,
-          config: config
-        });
-      } else {
-        // Standard single prompt
-        response = await genAI.models.generateContent({
-          model: modelName,
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          config: config
-        });
+  // Initialize Gemini
+  const ai = GEMINI_API_KEY ? new GoogleGenAI({
+    apiKey: GEMINI_API_KEY,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'aistudio-build',
       }
-      
-      const text = response.text || "";
-      res.json({ text });
-    } catch (error: any) {
-      console.error("Gemini Proxy Error:", error.message);
-      res.status(500).json({ error: error.message || "Failed to generate AI response" });
     }
-  });
+  }) : null;
 
   // Proxy for Google Sheets
   app.all("/api/spreadsheet", async (req, res) => {
     const url = new URL(SPREADSHEET_WEBAPP_URL);
     
-    // Copy query params for GET
     if (req.method === 'GET') {
       Object.keys(req.query).forEach(key => {
         url.searchParams.append(key, req.query[key] as string);
@@ -69,9 +39,7 @@ async function startServer() {
     try {
       const options: any = {
         method: req.method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         redirect: 'follow',
       };
 
@@ -82,7 +50,6 @@ async function startServer() {
       const response = await fetch(url.toString(), options);
       const data = await response.text();
       
-      // Try to parse as JSON, if not return as text
       try {
         res.json(JSON.parse(data));
       } catch {
@@ -90,6 +57,37 @@ async function startServer() {
       }
     } catch (error: any) {
       console.error("Proxy Error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Gemini Endpoints
+  app.post("/api/gemini/generate", async (req, res) => {
+    if (!ai) {
+      return res.status(500).json({ error: "Gemini API Key not configured" });
+    }
+
+    const { model, prompt, schema, thinkingBudget } = req.body;
+
+    try {
+      const generationConfig: any = {};
+      if (schema) {
+        generationConfig.responseMimeType = "application/json";
+        generationConfig.responseSchema = schema;
+      }
+      if (thinkingBudget) {
+        generationConfig.thinkingConfig = { thinkingBudget };
+      }
+
+      const result = await ai.models.generateContent({
+        model: model || "gemini-3.8-flash",
+        contents: prompt,
+        config: generationConfig
+      });
+
+      res.json({ text: result.text });
+    } catch (error: any) {
+      console.error("Gemini Error:", error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -110,7 +108,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
   });
 }
 
