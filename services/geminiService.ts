@@ -10,8 +10,13 @@ const getTodayFormatted = () => {
   return `${d}/${m}/${y}`;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
-const GEMINI_ENDPOINT = `${API_BASE_URL}/api/gemini/generate`;
+const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || '';
+if (!API_BASE_URL && import.meta.env.PROD) {
+  console.error("API URL is not set! Neither VITE_API_URL nor VITE_BACKEND_URL is defined.");
+}
+const GEMINI_ENDPOINT = API_BASE_URL.endsWith('/') 
+  ? `${API_BASE_URL}api/gemini/generate` 
+  : `${API_BASE_URL}/api/gemini/generate`;
 
 const callBackendGemini = async (prompt: string, model?: string, schema?: any, thinkingBudget?: number) => {
   const response = await fetch(GEMINI_ENDPOINT, {

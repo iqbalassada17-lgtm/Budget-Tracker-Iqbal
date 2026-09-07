@@ -50,8 +50,13 @@ export interface InvestasiSpreadsheetData {
 /**
  * URL PROXY ENDPOINT (Server-side proxy to bypass CORS)
  */
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
-const SPREADSHEET_PROXY_URL = `${API_BASE_URL}/api/spreadsheet`;
+const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || '';
+if (!API_BASE_URL && import.meta.env.PROD) {
+  console.error("API URL is not set! Neither VITE_API_URL nor VITE_BACKEND_URL is defined.");
+}
+const SPREADSHEET_PROXY_URL = API_BASE_URL.endsWith('/') 
+  ? `${API_BASE_URL}api/spreadsheet` 
+  : `${API_BASE_URL}/api/spreadsheet`;
 
 // Definisi Tipe Nama Sheet yang diizinkan
 export type SheetName = 'INPUT COST' | 'REVENUE' | 'BUDGET' | 'LIQUID ASSET' | 'FIX ASSET' | 'STOCKBIT' | 'INVESTASI';

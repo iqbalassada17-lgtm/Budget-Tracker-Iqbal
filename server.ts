@@ -49,6 +49,8 @@ async function startServer() {
         });
       }
 
+      console.log(`[Proxy] ${req.method} request to Google Sheets: ${url.pathname.substring(0, 20)}...`);
+      
       const options: any = {
         method: req.method,
         headers: { 'Content-Type': 'application/json' },
