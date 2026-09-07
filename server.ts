@@ -87,12 +87,15 @@ async function startServer() {
         generationConfig.responseMimeType = "application/json";
         generationConfig.responseSchema = schema;
       }
-      if (thinkingBudget) {
+      
+      // Thinking config hanya boleh untuk model yang mendukung (e.g. gemini-2.0-flash-thinking)
+      const requestedModel = model || "gemini-1.5-flash";
+      if (thinkingBudget && requestedModel.includes("thinking")) {
         generationConfig.thinkingConfig = { thinkingBudget };
       }
 
       const result = await ai.models.generateContent({
-        model: model || "gemini-3.8-flash",
+        model: requestedModel,
         contents: prompt,
         config: generationConfig
       });
